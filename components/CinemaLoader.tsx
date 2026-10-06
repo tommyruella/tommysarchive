@@ -57,17 +57,15 @@ export function CinemaLoader() {
   const isAllLoadedRef = useRef(false);
   const loadedCountRef = useRef(0);
   const totalAssetsRef = useRef(0);
-  const startTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {
-    startTimeRef.current = Date.now();
     const assets = getPreloadAssetList();
     totalAssetsRef.current = assets.length;
 
-    // Safety fallback: after 9.5 seconds, force proceed even if network stalls
+    // Safety fallback: after 10 seconds, force proceed if network stalls
     const safetyTimeout = setTimeout(() => {
       isAllLoadedRef.current = true;
-    }, 9500);
+    }, 10000);
 
     const checkAllComplete = () => {
       if (loadedCountRef.current >= totalAssetsRef.current) {
@@ -103,44 +101,25 @@ export function CinemaLoader() {
       }
     });
 
-    // Calibrated studio duration: 4.5 seconds (4500ms) as requested
-    const TOTAL_CALIBRATION_MS = 4500;
-
+    // Pure deterministic counter: increments by exactly 1 every 45ms.
+    // 100 steps * 45ms = 4500ms (exactly 4.5 seconds).
+    // It can NEVER jump or skip ahead because it only does `prev + 1`.
     const interval = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const timeRatio = Math.min(elapsed / TOTAL_CALIBRATION_MS, 1);
-      const isLoaded = isAllLoadedRef.current || loadedCountRef.current >= (totalAssetsRef.current || 1);
-
       setCounter((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
 
-        // Target percentage based on elapsed time over 4.5 seconds
-        let target = Math.floor(timeRatio * 100);
-
-        // If time reaches near 90% but some assets are still in flight, hold at 92%
-        if (!isLoaded && target > 92) {
-          target = 92;
+        // If we reach 88% and assets are still loading over the network,
+        // hold at 88% until every single cover and still has arrived!
+        if (prev >= 88 && !isAllLoadedRef.current) {
+          return 88;
         }
 
-        // Only reach 100% when time >= 4.5s AND all assets are loaded and decoded
-        if (target >= 100) {
-          if (isLoaded && elapsed >= TOTAL_CALIBRATION_MS) {
-            return 100;
-          }
-          return 99;
-        }
-
-        // Smooth steady progress toward target
-        if (prev < target) {
-          return prev + 1;
-        }
-
-        return prev;
+        return prev + 1;
       });
-    }, 35);
+    }, 45);
 
     return () => {
       clearInterval(interval);
@@ -148,16 +127,16 @@ export function CinemaLoader() {
     };
   }, []);
 
-  // When counter reaches 100, trigger cinematic shutter reveal
+  // When counter reaches 100%, hold briefly then trigger cinematic shutter reveal
   useEffect(() => {
     if (counter >= 100) {
       const revealTimer = setTimeout(() => {
         setIsRevealing(true);
-      }, 250);
+      }, 350);
 
       const unmountTimer = setTimeout(() => {
         setMounted(false);
-      }, 850);
+      }, 1100);
 
       return () => {
         clearTimeout(revealTimer);
@@ -168,14 +147,14 @@ export function CinemaLoader() {
 
   if (!mounted) return null;
 
-  const currentPercent = Math.min(counter, 100);
-
   return (
     <div
-      className={`fixed inset-0 z-[100] bg-[#000000] flex flex-col justify-between p-6 sm:p-12 pointer-events-none transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] select-none ${
-        isRevealing ? "opacity-0 scale-[1.01]" : "opacity-100 scale-100"
+      className={`fixed inset-0 z-[100] bg-[#000000] flex flex-col justify-between p-6 sm:p-12 select-none transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isRevealing
+          ? "opacity-0 scale-[1.01] pointer-events-none"
+          : "opacity-100 scale-100 pointer-events-auto"
       }`}
-      aria-hidden="true"
+      aria-hidden={isRevealing}
     >
       <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
         <span className="font-semibold text-zinc-300">Tommaso Ruella</span>
@@ -184,19 +163,19 @@ export function CinemaLoader() {
 
       <div className="flex flex-col items-center justify-center space-y-4">
         <div className="text-4xl sm:text-6xl font-bold tracking-tight text-white font-mono tabular-nums">
-          {currentPercent}%
+          {counter}%
         </div>
 
         {/* Minimal calibrated progress bar */}
-        <div className="w-44 sm:w-64 h-[3px] rounded-full bg-white/10 overflow-hidden relative">
+        <div className="w-48 sm:w-72 h-[3px] rounded-full bg-white/10 overflow-hidden relative">
           <div
-            className="h-full bg-white rounded-full transition-transform duration-100 ease-out origin-left will-change-transform"
-            style={{ transform: `scaleX(${currentPercent / 100})` }}
+            className="h-full bg-white rounded-full transition-transform duration-75 ease-linear origin-left will-change-transform"
+            style={{ transform: `scaleX(${counter / 100})` }}
           />
         </div>
 
         <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest pt-1">
-          {currentPercent < 100 ? "Calibrating Optical Assets" : "Studio Calibrated · 2.39:1"}
+          {counter < 100 ? "Calibrating Optical Assets" : "Studio Calibrated · 2.39:1"}
         </div>
       </div>
 
