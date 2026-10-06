@@ -4,6 +4,11 @@ import React, { useEffect, useState, useRef } from "react";
 import { WORKSTATION_PROJECTS } from "@/data/projects";
 import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
+interface CinemaLoaderProps {
+  activeProjectId?: string;
+  onComplete?: () => void;
+}
+
 function getCleanPoster(posterUrl: string, youtubeId?: string): string {
   if (youtubeId && posterUrl && posterUrl.includes("img.youtube.com")) {
     return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
@@ -11,139 +16,154 @@ function getCleanPoster(posterUrl: string, youtubeId?: string): string {
   return posterUrl;
 }
 
-function getPreloadAssetList(): string[] {
+function preloadAndDecodeImage(src: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (!src) return resolve(true);
+    const img = new Image();
+    img.src = src;
+
+    const handleSuccess = () => {
+      if (typeof img.decode === "function") {
+        img.decode().then(() => resolve(true)).catch(() => resolve(true));
+      } else {
+        resolve(true);
+      }
+    };
+
+    if (img.complete) {
+      handleSuccess();
+    } else {
+      img.onload = handleSuccess;
+      img.onerror = () => resolve(false);
+    }
+  });
+}
+
+function getEssentialAssets(activeProjectId?: string): string[] {
   const assetSet = new Set<string>();
 
-  WORKSTATION_PROJECTS.forEach((project) => {
-    // 1. Hero Cover & Timeline Thumbnail for every single project
-    let poster = project.primaryMedia.poster;
-    if (!poster && project.primaryMedia.youtubeId) {
-      poster = `https://img.youtube.com/vi/${project.primaryMedia.youtubeId}/mqdefault.jpg`;
-    }
+  // 1. Active project hero poster (1920px) + lead scene stills (1920px)
+  const activeProj =
+    WORKSTATION_PROJECTS.find(
+      (p) => p.id === activeProjectId || p.slug === activeProjectId
+    ) || WORKSTATION_PROJECTS[0];
 
+  if (activeProj) {
+    let poster = activeProj.primaryMedia.poster;
+    if (!poster && activeProj.primaryMedia.youtubeId) {
+      poster = `https://img.youtube.com/vi/${activeProj.primaryMedia.youtubeId}/maxresdefault.jpg`;
+    }
     if (poster) {
-      const clean = getCleanPoster(poster, project.primaryMedia.youtubeId);
-      // Hero resolution (1920px)
+      const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
       const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
       if (heroUrl) assetSet.add(heroUrl);
-
-      // Bottom timeline bar resolution (128px)
-      const thumbUrl = getOptimizedImageUrl(clean, 128, 75);
-      if (thumbUrl) assetSet.add(thumbUrl);
     }
 
-    // 2. Lead stills for all projects (so switching projects has zero delay)
-    if (project.stills && project.stills.length > 0) {
-      project.stills.slice(0, 6).forEach((still) => {
+    if (activeProj.stills && activeProj.stills.length > 0) {
+      activeProj.stills.slice(0, 4).forEach((still) => {
         if (still.url) {
           const stillHero = getOptimizedImageUrl(still.url, 1920, 75);
           if (stillHero) assetSet.add(stillHero);
-
-          const stillGrid = getOptimizedImageUrl(still.url, 640, 75);
-          if (stillGrid) assetSet.add(stillGrid);
         }
       });
+    }
+  }
+
+  // 2. All 11 project timeline thumbnails (128px) so the filmstrip renders instantly
+  WORKSTATION_PROJECTS.forEach((proj) => {
+    let poster = proj.primaryMedia.poster;
+    if (!poster && proj.primaryMedia.youtubeId) {
+      poster = `https://img.youtube.com/vi/${proj.primaryMedia.youtubeId}/mqdefault.jpg`;
+    }
+    if (poster) {
+      const clean = getCleanPoster(poster, proj.primaryMedia.youtubeId);
+      const thumbUrl = getOptimizedImageUrl(clean, 128, 75);
+      if (thumbUrl) assetSet.add(thumbUrl);
     }
   });
 
   return Array.from(assetSet);
 }
 
-export function CinemaLoader() {
+export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps) {
   const [mounted, setMounted] = useState(true);
   const [isRevealing, setIsRevealing] = useState(false);
   const [counter, setCounter] = useState(0);
 
-  const isAllLoadedRef = useRef(false);
-  const loadedCountRef = useRef(0);
-  const totalAssetsRef = useRef(0);
+  const onCompleteCalledRef = useRef(false);
 
   useEffect(() => {
-    const assets = getPreloadAssetList();
-    totalAssetsRef.current = assets.length;
+    const assets = getEssentialAssets(activeProjectId);
+    let isCancelled = false;
+    let assetsLoaded = false;
 
-    // Safety fallback: after 10 seconds, force proceed if network stalls
-    const safetyTimeout = setTimeout(() => {
-      isAllLoadedRef.current = true;
-    }, 10000);
-
-    const checkAllComplete = () => {
-      if (loadedCountRef.current >= totalAssetsRef.current) {
-        isAllLoadedRef.current = true;
-      }
-    };
-
-    // Preload and hardware-decode every asset in parallel
-    assets.forEach((url) => {
-      const img = new Image();
-      img.src = url;
-
-      const handleDone = () => {
-        loadedCountRef.current += 1;
-        checkAllComplete();
-      };
-
-      if (img.complete) {
-        if (typeof img.decode === "function") {
-          img.decode().then(handleDone).catch(handleDone);
-        } else {
-          handleDone();
-        }
-      } else {
-        img.onload = () => {
-          if (typeof img.decode === "function") {
-            img.decode().then(handleDone).catch(handleDone);
-          } else {
-            handleDone();
-          }
-        };
-        img.onerror = handleDone;
-      }
+    // Preload & GPU-decode every critical asset in parallel
+    Promise.all(assets.map(preloadAndDecodeImage)).then(() => {
+      assetsLoaded = true;
     });
 
-    // Pure deterministic counter: increments by exactly 1 every 45ms.
-    // 100 steps * 45ms = 4500ms (exactly 4.5 seconds).
-    // It can NEVER jump or skip ahead because it only does `prev + 1`.
-    const interval = setInterval(() => {
-      setCounter((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
+    // Total calibrated duration: 4.8 seconds (4800ms)
+    const TARGET_DURATION_MS = 4800;
+    const startTime = performance.now();
+    let animFrameId: number;
 
-        // If we reach 88% and assets are still loading over the network,
-        // hold at 88% until every single cover and still has arrived!
-        if (prev >= 88 && !isAllLoadedRef.current) {
-          return 88;
-        }
+    const tick = (now: number) => {
+      if (isCancelled) return;
 
-        return prev + 1;
-      });
-    }, 45);
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / TARGET_DURATION_MS, 1);
+
+      // Steady linear percentage based on real clock elapsed time
+      let nextVal = Math.floor(progress * 100);
+
+      // If we reach 90% and network assets are still in flight, hold at 90%
+      if (nextVal >= 90 && !assetsLoaded) {
+        nextVal = 90;
+      }
+
+      setCounter((prev) => Math.max(prev, nextVal));
+
+      if (progress < 1 || !assetsLoaded) {
+        animFrameId = requestAnimationFrame(tick);
+      } else {
+        setCounter(100);
+      }
+    };
+
+    animFrameId = requestAnimationFrame(tick);
 
     return () => {
-      clearInterval(interval);
-      clearTimeout(safetyTimeout);
+      isCancelled = true;
+      cancelAnimationFrame(animFrameId);
     };
-  }, []);
+  }, [activeProjectId]);
 
-  // When counter reaches 100%, hold briefly then trigger cinematic shutter reveal
+  // When counter hits 100%, trigger shutter reveal sequence
   useEffect(() => {
-    if (counter >= 100) {
+    if (counter >= 100 && !onCompleteCalledRef.current) {
+      onCompleteCalledRef.current = true;
+
+      // 1. Tell WorkstationShell that the studio assets are 100% ready
+      if (onComplete) {
+        onComplete();
+      }
+
+      // 2. Hold at 100% for 450ms so user reads "Studio Calibrated · 2.39:1"
       const revealTimer = setTimeout(() => {
         setIsRevealing(true);
-      }, 350);
+      }, 450);
 
+      // 3. Unmount after shutter dissolve transition completes
       const unmountTimer = setTimeout(() => {
         setMounted(false);
-      }, 1100);
+      }, 1200);
 
       return () => {
         clearTimeout(revealTimer);
         clearTimeout(unmountTimer);
       };
     }
-  }, [counter]);
+  }, [counter, onComplete]);
 
   if (!mounted) return null;
 
@@ -156,18 +176,20 @@ export function CinemaLoader() {
       }`}
       aria-hidden={isRevealing}
     >
+      {/* Top authorial header */}
       <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
         <span className="font-semibold text-zinc-300">Tommaso Ruella</span>
         <span className="tracking-widest uppercase">Cinema Workstation</span>
       </div>
 
+      {/* Center percentage counter & calibrated progress bar */}
       <div className="flex flex-col items-center justify-center space-y-4">
         <div className="text-4xl sm:text-6xl font-bold tracking-tight text-white font-mono tabular-nums">
           {counter}%
         </div>
 
         {/* Minimal calibrated progress bar */}
-        <div className="w-48 sm:w-72 h-[3px] rounded-full bg-white/10 overflow-hidden relative">
+        <div className="w-52 sm:w-80 h-[3px] rounded-full bg-white/10 overflow-hidden relative">
           <div
             className="h-full bg-white rounded-full transition-transform duration-75 ease-linear origin-left will-change-transform"
             style={{ transform: `scaleX(${counter / 100})` }}
@@ -179,6 +201,7 @@ export function CinemaLoader() {
         </div>
       </div>
 
+      {/* Bottom technical metadata */}
       <div className="flex items-center justify-between text-xs text-zinc-500 font-mono tabular-nums">
         <span>Milano, IT</span>
         <span>2022 — {new Date().getFullYear()}</span>

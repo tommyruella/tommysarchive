@@ -71,7 +71,7 @@ export function MainProjectViewer({
   const theme = getClipTheme(project.clipColor);
   const cleanPoster = getCleanPoster(project.primaryMedia.poster, project.primaryMedia.youtubeId);
   const activeStillUrl = selectedStill?.url || cleanPoster;
-  const [loadedDisplayUrl, setLoadedDisplayUrl] = useState<string | null>(null);
+  const [loadedDisplayUrl, setLoadedDisplayUrl] = useState<string | null>(cleanPoster);
 
   // Send postMessage command to embedded YouTube player
   const sendCommand = useCallback((func: string, args: any = "") => {

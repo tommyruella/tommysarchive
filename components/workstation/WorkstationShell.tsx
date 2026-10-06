@@ -7,6 +7,7 @@ import { MainProjectViewer } from "./MainProjectViewer";
 import { ProjectTimelineBar } from "./ProjectTimelineBar";
 import { AboutWorkstationDrawer } from "./AboutWorkstationDrawer";
 import { ProjectDetailsModal } from "./ProjectDetailsModal";
+import { CinemaLoader } from "@/components/CinemaLoader";
 import { ArrowUpRight } from "lucide-react";
 
 export function WorkstationShell() {
@@ -28,6 +29,7 @@ export function WorkstationShell() {
   const [currentTimecode, setCurrentTimecode] = useState<string>("00:00:00:00");
   const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
 
   const activeProject =
     WORKSTATION_PROJECTS.find((p) => p.id === activeProjectId) ||
@@ -125,51 +127,62 @@ export function WorkstationShell() {
   }, [activeIndex, handleSelectProject]);
 
   return (
-    <div className="w-full h-[100dvh] bg-[#000000] text-zinc-100 flex flex-col overflow-hidden select-none">
-      {/* 1. MINIMAL AUTHORIAL TOP NAVIGATION BAR */}
-      <header className="h-14 sm:h-16 px-4 sm:px-8 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#000000] z-20">
-        {/* Left: Author Identity (Only Name) */}
-        <Link
-          href="/"
-          className="focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
-        >
-          <span className="text-sm sm:text-base font-black tracking-tight uppercase text-white hover:text-zinc-300 transition-colors">
-            Tommaso Ruella
-          </span>
-        </Link>
+    <div className="w-full h-[100dvh] bg-[#000000] text-zinc-100 flex flex-col overflow-hidden select-none relative">
+      {/* 0. CINEMA CALIBRATION PRELOADER (Gates the workstation until all initial assets are decoded) */}
+      <CinemaLoader
+        activeProjectId={activeProjectId}
+        onComplete={() => setIsReady(true)}
+      />
 
-        {/* Right: Just Archive */}
-        <Link
-          href="/archive"
-          className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
-        >
-          Archive
-        </Link>
-      </header>
+      {/* 1. WORKSTATION STAGE: Gated and revealed seamlessly when calibration completes */}
+      <div
+        className={`w-full h-full flex flex-col transition-opacity duration-700 ease-out ${
+          isReady ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Top Authorial Navigation Bar */}
+        <header className="h-14 sm:h-16 px-4 sm:px-8 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#000000] z-20">
+          <Link
+            href="/"
+            className="focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+          >
+            <span className="text-sm sm:text-base font-black tracking-tight uppercase text-white hover:text-zinc-300 transition-colors">
+              Tommaso Ruella
+            </span>
+          </Link>
 
-      {/* 2. MAIN CINEMA STAGE (Single hero stage, zero cramped side panels!) */}
-      <main className="flex-1 w-full min-h-0 flex flex-col overflow-hidden relative p-2 sm:p-4 md:p-6">
-        <MainProjectViewer
-          project={activeProject}
-          activeMediaIndex={activeMediaIndex}
-          isPlaying={isPlaying}
-          onTogglePlay={() => setIsPlaying(!isPlaying)}
-          onStepMedia={handleStepMedia}
-          onSelectMedia={setActiveMediaIndex}
-          currentTimecode={currentTimecode}
-          onTimeUpdate={setCurrentTimecode}
-          onOpenDetails={() => setIsDetailsOpen(true)}
-        />
-      </main>
+          <Link
+            href="/archive"
+            className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+          >
+            Archive
+          </Link>
+        </header>
 
-      {/* 3. SIGNATURE SMPTE PLAYHEAD & FILMSTRIP RAIL */}
-      <footer className="w-full flex-shrink-0 h-28 sm:h-32">
-        <ProjectTimelineBar
-          projects={WORKSTATION_PROJECTS}
-          activeProjectId={activeProjectId}
-          onSelectProject={handleSelectProject}
-        />
-      </footer>
+        {/* Main Cinema Stage */}
+        <main className="flex-1 w-full min-h-0 flex flex-col overflow-hidden relative p-2 sm:p-4 md:p-6">
+          <MainProjectViewer
+            project={activeProject}
+            activeMediaIndex={activeMediaIndex}
+            isPlaying={isPlaying}
+            onTogglePlay={() => setIsPlaying(!isPlaying)}
+            onStepMedia={handleStepMedia}
+            onSelectMedia={setActiveMediaIndex}
+            currentTimecode={currentTimecode}
+            onTimeUpdate={setCurrentTimecode}
+            onOpenDetails={() => setIsDetailsOpen(true)}
+          />
+        </main>
+
+        {/* Signature SMPTE Playhead & Filmstrip Rail */}
+        <footer className="w-full flex-shrink-0 h-28 sm:h-32">
+          <ProjectTimelineBar
+            projects={WORKSTATION_PROJECTS}
+            activeProjectId={activeProjectId}
+            onSelectProject={handleSelectProject}
+          />
+        </footer>
+      </div>
 
       {/* Centered Modal Pop-up for Project Details & Credits */}
       <ProjectDetailsModal

@@ -29,7 +29,9 @@ export function RecentPhotosViewer({
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);
-  const [loadedCarouselUrl, setLoadedCarouselUrl] = useState<string | null>(null);
+  const [loadedCarouselUrl, setLoadedCarouselUrl] = useState<string | null>(
+    project.stills[0]?.url || null
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);

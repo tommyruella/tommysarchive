@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { CinemaLoader } from "@/components/CinemaLoader";
 import { ConditionalFooter } from "@/components/ConditionalFooter";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -93,9 +92,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
       </head>
       <body className="bg-black text-zinc-100 antialiased min-h-screen flex flex-col font-sans selection:bg-white selection:text-black">
-        {/* Cinema Calibration & Optical Preloader */}
-        <CinemaLoader />
-
         {/* Content */}
         <main className="flex-1 flex flex-col">{children}</main>
 
