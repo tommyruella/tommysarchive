@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { X, Mail, ArrowUpRight } from "lucide-react";
+import { resolveMediaUrl } from "@/data/projects";
 
 interface AboutWorkstationDrawerProps {
   isOpen: boolean;
@@ -102,7 +103,7 @@ export function AboutWorkstationDrawer({
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/10 flex-shrink-0 bg-black/60 shadow-lg">
               <img
-                src="/projects/esothia/02.png"
+                src={resolveMediaUrl("/projects/esothia/02.png")}
                 alt="Tommaso Ruella"
                 className="w-full h-full object-cover object-center"
               />

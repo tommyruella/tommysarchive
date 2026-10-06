@@ -334,7 +334,10 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
   },
 ];
 
-const MEDIA_BASE_URL = (process.env.NEXT_PUBLIC_MEDIA_URL || "").replace(/\/+$/, "");
+const MEDIA_BASE_URL = (
+  process.env.NEXT_PUBLIC_MEDIA_URL ||
+  "https://myottiivbgnvewtwipmg.supabase.co/storage/v1/object/public/stills"
+).replace(/\/+$/, "");
 
 /**
  * Resolves a media URL:
