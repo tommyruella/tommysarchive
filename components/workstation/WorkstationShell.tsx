@@ -78,6 +78,10 @@ export function WorkstationShell() {
     setIsPlaying(false);
   }, []);
 
+  const handleLoaderComplete = useCallback(() => {
+    setIsReady(true);
+  }, []);
+
   const handleStepMedia = useCallback(
     (direction: "prev" | "next") => {
       const currentIndex = WORKSTATION_PROJECTS.findIndex(
@@ -131,7 +135,7 @@ export function WorkstationShell() {
       {/* 0. CINEMA CALIBRATION PRELOADER (Gates the workstation until all initial assets are decoded) */}
       <CinemaLoader
         activeProjectId={activeProjectId}
-        onComplete={() => setIsReady(true)}
+        onComplete={handleLoaderComplete}
       />
 
       {/* 1. WORKSTATION STAGE: Gated and revealed seamlessly when calibration completes */}

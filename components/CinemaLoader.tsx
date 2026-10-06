@@ -19,10 +19,17 @@ function getCleanPoster(posterUrl: string, youtubeId?: string): string {
 function preloadAndDecodeImage(src: string): Promise<boolean> {
   return new Promise((resolve) => {
     if (!src) return resolve(true);
+
+    // Safety timeout: an image cannot block the pipeline for more than 3.5s
+    const timer = setTimeout(() => {
+      resolve(true);
+    }, 3500);
+
     const img = new Image();
     img.src = src;
 
     const handleSuccess = () => {
+      clearTimeout(timer);
       if (typeof img.decode === "function") {
         img.decode().then(() => resolve(true)).catch(() => resolve(true));
       } else {
@@ -34,7 +41,10 @@ function preloadAndDecodeImage(src: string): Promise<boolean> {
       handleSuccess();
     } else {
       img.onload = handleSuccess;
-      img.onerror = () => resolve(false);
+      img.onerror = () => {
+        clearTimeout(timer);
+        resolve(false);
+      };
     }
   });
 }
@@ -90,12 +100,23 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
   const [isRevealing, setIsRevealing] = useState(false);
   const [counter, setCounter] = useState(0);
 
-  const onCompleteCalledRef = useRef(false);
+  // Keep latest onComplete in a ref so changes never trigger cleanup of reveal timers
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  const hasFinishedRef = useRef(false);
 
   useEffect(() => {
     const assets = getEssentialAssets(activeProjectId);
     let isCancelled = false;
     let assetsLoaded = false;
+
+    // Hard fallback: after 5.5s, force assetsLoaded = true even if connection stalled
+    const networkFallbackTimer = setTimeout(() => {
+      assetsLoaded = true;
+    }, 5500);
 
     // Preload & GPU-decode every critical asset in parallel
     Promise.all(assets.map(preloadAndDecodeImage)).then(() => {
@@ -134,36 +155,36 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
 
     return () => {
       isCancelled = true;
+      clearTimeout(networkFallbackTimer);
       cancelAnimationFrame(animFrameId);
     };
   }, [activeProjectId]);
 
-  // When counter hits 100%, trigger shutter reveal sequence
+  // When counter hits 100%, trigger shutter reveal sequence.
+  // Note: Only depends on [counter], NEVER on onComplete callback!
   useEffect(() => {
-    if (counter >= 100 && !onCompleteCalledRef.current) {
-      onCompleteCalledRef.current = true;
+    if (counter >= 100 && !hasFinishedRef.current) {
+      hasFinishedRef.current = true;
 
       // 1. Tell WorkstationShell that the studio assets are 100% ready
-      if (onComplete) {
-        onComplete();
-      }
+      onCompleteRef.current?.();
 
-      // 2. Hold at 100% for 450ms so user reads "Studio Calibrated · 2.39:1"
+      // 2. Hold at 100% for 400ms so user reads "Studio Calibrated · 2.39:1"
       const revealTimer = setTimeout(() => {
         setIsRevealing(true);
-      }, 450);
+      }, 400);
 
-      // 3. Unmount after shutter dissolve transition completes
+      // 3. Unmount after shutter dissolve transition completes (1100ms)
       const unmountTimer = setTimeout(() => {
         setMounted(false);
-      }, 1200);
+      }, 1100);
 
       return () => {
         clearTimeout(revealTimer);
         clearTimeout(unmountTimer);
       };
     }
-  }, [counter, onComplete]);
+  }, [counter]);
 
   if (!mounted) return null;
 
