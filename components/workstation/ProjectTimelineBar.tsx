@@ -114,10 +114,7 @@ export function ProjectTimelineBar({
                   }
                 >
                   {/* Project Frame Thumbnail (Filmstrip Cell) */}
-                  <div
-                    className="relative w-14 sm:w-16 h-full aspect-video rounded overflow-hidden bg-black flex-shrink-0 border border-white/10"
-                    style={isActive ? { borderColor: `${theme.colorHex}70` } : undefined}
-                  >
+                  <div className="relative w-14 sm:w-16 h-full aspect-video rounded overflow-hidden bg-black flex-shrink-0 border border-white/10">
                     <img
                       src={getOptimizedImageUrl(poster, 128)}
                       alt={proj.title}

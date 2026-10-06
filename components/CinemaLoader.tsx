@@ -190,21 +190,26 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
 
   return (
     <div
-      className={`fixed inset-0 z-[100] bg-[#000000] flex flex-col justify-between p-6 sm:p-12 select-none transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`fixed inset-0 z-[100] bg-[#000000] flex flex-col justify-between select-none transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         isRevealing
           ? "opacity-0 scale-[1.01] pointer-events-none"
           : "opacity-100 scale-100 pointer-events-auto"
       }`}
       aria-hidden={isRevealing}
     >
-      {/* Top authorial header */}
-      <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
-        <span className="font-semibold text-zinc-300">Tommaso Ruella</span>
-        <span className="tracking-widest uppercase">Cinema Workstation</span>
-      </div>
+      {/* Top authorial header - Matched 1:1 with site topbar */}
+      <header className="h-14 sm:h-16 px-4 sm:px-8 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#000000] z-20">
+        <span className="text-sm sm:text-base font-black tracking-tight uppercase text-white">
+          Tommaso Ruella
+        </span>
+
+        <span className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400">
+          Archive
+        </span>
+      </header>
 
       {/* Center percentage counter & calibrated progress bar */}
-      <div className="flex flex-col items-center justify-center space-y-4">
+      <div className="flex-1 flex flex-col items-center justify-center space-y-4 px-4">
         <div className="text-4xl sm:text-6xl font-bold tracking-tight text-white font-mono tabular-nums">
           {counter}%
         </div>
@@ -217,16 +222,16 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
           />
         </div>
 
-        <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest pt-1">
-          {counter < 100 ? "Calibrating Optical Assets" : "Studio Calibrated · 2.39:1"}
+        <div className="text-xs text-zinc-400 font-mono tracking-wide pt-1">
+          {counter < 100 ? "it may take just a few sec :)" : "Studio Calibrated · 2.39:1"}
         </div>
       </div>
 
       {/* Bottom technical metadata */}
-      <div className="flex items-center justify-between text-xs text-zinc-500 font-mono tabular-nums">
-        <span>Milano, IT</span>
+      <footer className="h-12 sm:h-14 px-4 sm:px-8 flex items-center justify-between text-xs text-zinc-500 font-mono tabular-nums flex-shrink-0">
+        <span>Turin, Italy</span>
         <span>2022 — {new Date().getFullYear()}</span>
-      </div>
+      </footer>
     </div>
   );
 }
