@@ -1,6 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
+
+const PRELOAD_ASSETS = [
+  "https://myottiivbgnvewtwipmg.supabase.co/storage/v1/object/public/stills/london/00.png",
+  "https://myottiivbgnvewtwipmg.supabase.co/storage/v1/object/public/stills/hobbiton/01.png",
+  "https://myottiivbgnvewtwipmg.supabase.co/storage/v1/object/public/stills/esothia/02.png",
+];
 
 export function CinemaLoader() {
   const [mounted, setMounted] = useState(true);
@@ -8,23 +15,29 @@ export function CinemaLoader() {
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
+    // Warm up browser cache by prefetching lead assets during studio calibration
+    PRELOAD_ASSETS.forEach((url) => {
+      const img = new Image();
+      img.src = getOptimizedImageUrl(url, 1920, 80);
+    });
+
     const interval = setInterval(() => {
       setCounter((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        return prev + Math.floor(Math.random() * 20) + 15;
+        return prev + Math.floor(Math.random() * 6) + 3;
       });
-    }, 40);
+    }, 45);
 
     const revealTimer = setTimeout(() => {
       setIsRevealing(true);
-    }, 600);
+    }, 1350);
 
     const unmountTimer = setTimeout(() => {
       setMounted(false);
-    }, 1100);
+    }, 1850);
 
     return () => {
       clearInterval(interval);

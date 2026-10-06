@@ -70,6 +70,8 @@ export function MainProjectViewer({
   const editorial = getProjectEditorial(project);
   const theme = getClipTheme(project.clipColor);
   const cleanPoster = getCleanPoster(project.primaryMedia.poster, project.primaryMedia.youtubeId);
+  const activeStillUrl = selectedStill?.url || cleanPoster;
+  const [loadedDisplayUrl, setLoadedDisplayUrl] = useState<string | null>(null);
 
   // Send postMessage command to embedded YouTube player
   const sendCommand = useCallback((func: string, args: any = "") => {
@@ -316,6 +318,7 @@ export function MainProjectViewer({
                       <img
                         src={getOptimizedImageUrl(cleanPoster, 1920, 80)}
                         alt={project.title}
+                        onLoad={() => setLoadedDisplayUrl(cleanPoster)}
                         onError={(e) => {
                           const target = e.currentTarget;
                           if (!target.src.includes("mqdefault.jpg")) {
@@ -324,7 +327,9 @@ export function MainProjectViewer({
                               : project.primaryMedia.poster;
                           }
                         }}
-                        className="w-full h-full object-contain select-none"
+                        className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
+                          loadedDisplayUrl === cleanPoster ? "opacity-100" : "opacity-0"
+                        }`}
                         decoding="async"
                         fetchPriority="high"
                       />
@@ -364,11 +369,15 @@ export function MainProjectViewer({
               )
             ) : (
               /* Still or Photo Project Display (Edge-to-edge container, object-contain, ZERO inner padding, ZERO inner rounded border, ZERO inner drop shadow) */
-              <div className="w-full h-full flex items-center justify-center bg-black">
+              <div className="w-full h-full flex items-center justify-center bg-black relative">
                 <img
-                  src={getOptimizedImageUrl(selectedStill?.url || cleanPoster, 1920, 85)}
+                  key={activeStillUrl}
+                  src={getOptimizedImageUrl(activeStillUrl, 1920, 85)}
                   alt={project.title}
-                  className="w-full h-full object-contain select-none transition-opacity duration-200"
+                  onLoad={() => setLoadedDisplayUrl(activeStillUrl)}
+                  className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
+                    loadedDisplayUrl === activeStillUrl ? "opacity-100" : "opacity-0"
+                  }`}
                   decoding="async"
                   fetchPriority="high"
                 />

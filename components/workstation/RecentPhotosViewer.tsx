@@ -29,6 +29,7 @@ export function RecentPhotosViewer({
   const [carouselIndex, setCarouselIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [progress, setProgress] = useState<number>(0);
+  const [loadedCarouselUrl, setLoadedCarouselUrl] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
@@ -274,7 +275,10 @@ export function RecentPhotosViewer({
                 key={currentPhoto?.url}
                 src={getOptimizedImageUrl(currentPhoto?.url, 1920, 85)}
                 alt={project.title}
-                className="max-h-[58vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-200"
+                onLoad={() => setLoadedCarouselUrl(currentPhoto?.url)}
+                className={`max-h-[58vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-300 ease-out ${
+                  loadedCarouselUrl === currentPhoto?.url ? "opacity-100" : "opacity-0"
+                }`}
                 decoding="async"
                 fetchPriority="high"
               />
