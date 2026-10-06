@@ -95,8 +95,32 @@ function getEssentialAssets(activeProjectId?: string): string[] {
   return Array.from(assetSet);
 }
 
+let isSessionCalibrated = false;
+
+export function hasSessionCalibrated(): boolean {
+  if (isSessionCalibrated) return true;
+  if (typeof window !== "undefined") {
+    try {
+      if (sessionStorage.getItem("cinema_calibrated") === "true") {
+        isSessionCalibrated = true;
+        return true;
+      }
+    } catch {}
+  }
+  return false;
+}
+
+export function markSessionCalibrated(): void {
+  isSessionCalibrated = true;
+  if (typeof window !== "undefined") {
+    try {
+      sessionStorage.setItem("cinema_calibrated", "true");
+    } catch {}
+  }
+}
+
 export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps) {
-  const [mounted, setMounted] = useState(true);
+  const [mounted, setMounted] = useState(() => !hasSessionCalibrated());
   const [isRevealing, setIsRevealing] = useState(false);
   const [counter, setCounter] = useState(0);
 
@@ -105,6 +129,14 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
+
+  // If already calibrated in this session, immediately notify parent and don't render
+  useEffect(() => {
+    if (hasSessionCalibrated()) {
+      onCompleteRef.current?.();
+      setMounted(false);
+    }
+  }, []);
 
   const hasFinishedRef = useRef(false);
 
@@ -165,6 +197,7 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
   useEffect(() => {
     if (counter >= 100 && !hasFinishedRef.current) {
       hasFinishedRef.current = true;
+      markSessionCalibrated();
 
       // 1. Tell WorkstationShell that the studio assets are 100% ready
       onCompleteRef.current?.();

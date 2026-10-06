@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { WORKSTATION_PROJECTS } from "@/data/projects";
 import { WorkstationProject } from "@/types/project";
 import { ProjectDetailsModal } from "@/components/workstation/ProjectDetailsModal";
 import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
+import { markSessionCalibrated } from "@/components/CinemaLoader";
 
 type FilterType = "ALL" | "FILMS" | "PHOTOS" | "3D";
 
@@ -19,6 +20,10 @@ interface ArchiveItem {
 }
 
 export default function ArchivePage() {
+  useEffect(() => {
+    markSessionCalibrated();
+  }, []);
+
   const [filter, setFilter] = useState<FilterType>("ALL");
   const [selectedProject, setSelectedProject] = useState<WorkstationProject | null>(null);
 

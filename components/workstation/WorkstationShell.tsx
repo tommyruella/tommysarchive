@@ -7,7 +7,7 @@ import { MainProjectViewer } from "./MainProjectViewer";
 import { ProjectTimelineBar } from "./ProjectTimelineBar";
 import { AboutWorkstationDrawer } from "./AboutWorkstationDrawer";
 import { ProjectDetailsModal } from "./ProjectDetailsModal";
-import { CinemaLoader } from "@/components/CinemaLoader";
+import { CinemaLoader, hasSessionCalibrated } from "@/components/CinemaLoader";
 import { ArrowUpRight } from "lucide-react";
 
 export function WorkstationShell() {
@@ -29,7 +29,7 @@ export function WorkstationShell() {
   const [currentTimecode, setCurrentTimecode] = useState<string>("00:00:00:00");
   const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false);
-  const [isReady, setIsReady] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(() => hasSessionCalibrated());
 
   const activeProject =
     WORKSTATION_PROJECTS.find((p) => p.id === activeProjectId) ||
@@ -133,10 +133,12 @@ export function WorkstationShell() {
   return (
     <div className="w-full h-[100dvh] bg-[#000000] text-zinc-100 flex flex-col overflow-hidden select-none relative">
       {/* 0. CINEMA CALIBRATION PRELOADER (Gates the workstation until all initial assets are decoded) */}
-      <CinemaLoader
-        activeProjectId={activeProjectId}
-        onComplete={handleLoaderComplete}
-      />
+      {!isReady && (
+        <CinemaLoader
+          activeProjectId={activeProjectId}
+          onComplete={handleLoaderComplete}
+        />
+      )}
 
       {/* 1. WORKSTATION STAGE: Gated and revealed seamlessly when calibration completes */}
       <div
