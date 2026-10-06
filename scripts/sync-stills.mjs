@@ -58,11 +58,23 @@ export function syncStills(quiet = false) {
   }
 
   const entries = fs.readdirSync(projectsDir, { withFileTypes: true });
+  const dirEntries = entries.filter((e) => e.isDirectory() && !e.name.startsWith("."));
+  if (dirEntries.length === 0) {
+    if (!quiet) console.log(`[sync-stills] No project subdirectories found in ${projectsDir}. Preserving existing index.`);
+    if (fs.existsSync(outputFile)) {
+      try {
+        return JSON.parse(fs.readFileSync(outputFile, "utf-8"));
+      } catch (err) {
+        return {};
+      }
+    }
+    return {};
+  }
+
   const map = {};
   let totalImages = 0;
 
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+  for (const entry of dirEntries) {
     const slug = entry.name;
     const projectFolder = path.join(projectsDir, slug);
 
@@ -81,6 +93,15 @@ export function syncStills(quiet = false) {
 
     map[slug] = urls;
     totalImages += urls.length;
+  }
+
+  if (totalImages === 0 && fs.existsSync(outputFile)) {
+    if (!quiet) console.log(`[sync-stills] 0 images indexed. Preserving existing index.`);
+    try {
+      return JSON.parse(fs.readFileSync(outputFile, "utf-8"));
+    } catch {
+      return {};
+    }
   }
 
   // Ensure output directory exists
