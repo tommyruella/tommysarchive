@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { WORKSTATION_PROJECTS } from "@/data/projects";
 import { WorkstationProject } from "@/types/project";
 import { ProjectDetailsModal } from "@/components/workstation/ProjectDetailsModal";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 export default function FilmsPage() {
   const [selectedFilm, setSelectedFilm] = useState<WorkstationProject | null>(null);
@@ -46,10 +47,11 @@ export default function FilmsPage() {
           >
             <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-white/[0.08] group-hover:border-white/30 transition-[border-color] duration-300">
               <img
-                src={film.primaryMedia.poster}
+                src={getOptimizedImageUrl(film.primaryMedia.poster, 640)}
                 alt={film.title}
                 className="w-full h-full object-contain"
                 loading="lazy"
+                decoding="async"
               />
             </div>
 

@@ -18,7 +18,7 @@ export function CinemaLoader() {
     // Warm up browser cache by prefetching lead assets during studio calibration
     PRELOAD_ASSETS.forEach((url) => {
       const img = new Image();
-      img.src = getOptimizedImageUrl(url, 1920, 80);
+      img.src = getOptimizedImageUrl(url, 1920, 75);
     });
 
     const interval = setInterval(() => {

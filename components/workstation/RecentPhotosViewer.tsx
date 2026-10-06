@@ -273,7 +273,7 @@ export function RecentPhotosViewer({
             <div className="relative max-w-full max-h-full flex items-center justify-center overflow-hidden rounded-xl bg-black border border-white/[0.08] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] p-1">
               <img
                 key={currentPhoto?.url}
-                src={getOptimizedImageUrl(currentPhoto?.url, 1920, 85)}
+                src={getOptimizedImageUrl(currentPhoto?.url, 1920, 75)}
                 alt={project.title}
                 onLoad={() => setLoadedCarouselUrl(currentPhoto?.url)}
                 className={`max-h-[58vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-300 ease-out ${

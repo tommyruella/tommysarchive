@@ -16,6 +16,7 @@ const nextConfig = {
     root: process.cwd(),
   },
   images: {
+    qualities: [75, 80, 85],
     remotePatterns: [
       {
         protocol: 'https',

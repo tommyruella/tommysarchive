@@ -28,5 +28,13 @@ export function getOptimizedImageUrl(
     VALID_NEXT_WIDTHS.find((w) => w >= targetWidth) ||
     VALID_NEXT_WIDTHS[VALID_NEXT_WIDTHS.length - 1];
 
-  return `/_next/image?url=${encodeURIComponent(url)}&w=${width}&q=${quality}`;
+  // Decode first to prevent double-encoding (e.g. %20 -> %2520), then cleanly encode
+  let sanitizedUrl = url;
+  try {
+    sanitizedUrl = decodeURI(url);
+  } catch {
+    // If malformed or already clean, fallback to original
+  }
+
+  return `/_next/image?url=${encodeURIComponent(sanitizedUrl)}&w=${width}&q=${quality}`;
 }

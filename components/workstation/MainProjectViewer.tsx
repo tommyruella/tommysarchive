@@ -316,7 +316,7 @@ export function MainProjectViewer({
                       aria-label={`Riproduci ${project.title}`}
                     >
                       <img
-                        src={getOptimizedImageUrl(cleanPoster, 1920, 80)}
+                        src={getOptimizedImageUrl(cleanPoster, 1920, 75)}
                         alt={project.title}
                         onLoad={() => setLoadedDisplayUrl(cleanPoster)}
                         onError={(e) => {
@@ -351,7 +351,7 @@ export function MainProjectViewer({
                     ref={videoRef}
                     className="w-full h-full object-contain"
                     src={project.primaryMedia.localVideo}
-                    poster={getOptimizedImageUrl(project.primaryMedia.poster, 1920, 80)}
+                    poster={getOptimizedImageUrl(project.primaryMedia.poster, 1920, 75)}
                     controls
                     playsInline
                   />
@@ -360,7 +360,7 @@ export function MainProjectViewer({
                 /* Fallback poster */
                 <div className="w-full h-full flex items-center justify-center bg-black">
                   <img
-                    src={getOptimizedImageUrl(cleanPoster, 1920, 80)}
+                    src={getOptimizedImageUrl(cleanPoster, 1920, 75)}
                     alt={project.title}
                     className="w-full h-full object-contain select-none"
                     decoding="async"
@@ -372,7 +372,7 @@ export function MainProjectViewer({
               <div className="w-full h-full flex items-center justify-center bg-black relative">
                 <img
                   key={activeStillUrl}
-                  src={getOptimizedImageUrl(activeStillUrl, 1920, 85)}
+                  src={getOptimizedImageUrl(activeStillUrl, 1920, 75)}
                   alt={project.title}
                   onLoad={() => setLoadedDisplayUrl(activeStillUrl)}
                   className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
