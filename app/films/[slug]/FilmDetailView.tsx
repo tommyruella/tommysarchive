@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Maximize, Minimize, ArrowUpRight } from "lucide-react";
 import { WorkstationProject } from "@/types/project";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 interface FilmDetailViewProps {
   project: WorkstationProject;
@@ -109,9 +110,10 @@ export default function FilmDetailView({ project }: FilmDetailViewProps) {
                 aria-label={`Riproduci ${project.title}`}
               >
                 <img
-                  src={project.primaryMedia.poster}
+                  src={getOptimizedImageUrl(project.primaryMedia.poster, 1200)}
                   alt={project.title}
                   className="w-full h-full object-contain"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-200 flex items-center justify-center">
                   <div className="w-16 h-16 rounded-full bg-white/10 group-hover:bg-white/25 backdrop-blur-md border border-white/25 flex items-center justify-center text-white transition-all transform group-hover:scale-110 shadow-2xl">
@@ -122,16 +124,18 @@ export default function FilmDetailView({ project }: FilmDetailViewProps) {
             )
           ) : (
             <img
-              src={project.primaryMedia.poster}
+              src={getOptimizedImageUrl(project.primaryMedia.poster, 1200)}
               alt={project.title}
               className="w-full h-full object-contain"
+              decoding="async"
             />
           )
         ) : (
           <img
-            src={project.primaryMedia.src || project.primaryMedia.poster}
+            src={getOptimizedImageUrl(project.primaryMedia.src || project.primaryMedia.poster, 1200)}
             alt={project.title}
             className="w-full h-full object-contain"
+            decoding="async"
           />
         )}
       </div>
@@ -174,10 +178,11 @@ export default function FilmDetailView({ project }: FilmDetailViewProps) {
                     className="relative aspect-[16/10] rounded-xl overflow-hidden group bg-black/60 border border-white/[0.06]"
                   >
                     <img
-                      src={still.url}
+                      src={getOptimizedImageUrl(still.url, 640)}
                       alt={`${project.title} frame`}
                       className="w-full h-full object-contain filter contrast-105"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                 ))}

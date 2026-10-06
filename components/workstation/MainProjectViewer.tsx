@@ -5,6 +5,7 @@ import { WorkstationProject } from "@/types/project";
 import { Play, Pause, Info, Film, Image as ImageIcon } from "lucide-react";
 import { getProjectEditorial, getClipTheme } from "@/lib/projectUtils";
 import { RecentPhotosViewer } from "./RecentPhotosViewer";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 interface MainProjectViewerProps {
   project: WorkstationProject;
@@ -313,7 +314,7 @@ export function MainProjectViewer({
                       aria-label={`Riproduci ${project.title}`}
                     >
                       <img
-                        src={cleanPoster}
+                        src={getOptimizedImageUrl(cleanPoster, 1920, 80)}
                         alt={project.title}
                         onError={(e) => {
                           const target = e.currentTarget;
@@ -324,6 +325,8 @@ export function MainProjectViewer({
                           }
                         }}
                         className="w-full h-full object-contain select-none"
+                        decoding="async"
+                        fetchPriority="high"
                       />
 
                       {/* Centered Minimal Play Icon on Hover */}
@@ -343,7 +346,7 @@ export function MainProjectViewer({
                     ref={videoRef}
                     className="w-full h-full object-contain"
                     src={project.primaryMedia.localVideo}
-                    poster={project.primaryMedia.poster}
+                    poster={getOptimizedImageUrl(project.primaryMedia.poster, 1920, 80)}
                     controls
                     playsInline
                   />
@@ -352,9 +355,10 @@ export function MainProjectViewer({
                 /* Fallback poster */
                 <div className="w-full h-full flex items-center justify-center bg-black">
                   <img
-                    src={cleanPoster}
+                    src={getOptimizedImageUrl(cleanPoster, 1920, 80)}
                     alt={project.title}
                     className="w-full h-full object-contain select-none"
+                    decoding="async"
                   />
                 </div>
               )
@@ -362,9 +366,11 @@ export function MainProjectViewer({
               /* Still or Photo Project Display (Edge-to-edge container, object-contain, ZERO inner padding, ZERO inner rounded border, ZERO inner drop shadow) */
               <div className="w-full h-full flex items-center justify-center bg-black">
                 <img
-                  src={selectedStill?.url || cleanPoster}
+                  src={getOptimizedImageUrl(selectedStill?.url || cleanPoster, 1920, 85)}
                   alt={project.title}
                   className="w-full h-full object-contain select-none transition-opacity duration-200"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               </div>
             )}

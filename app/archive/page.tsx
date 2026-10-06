@@ -5,6 +5,7 @@ import Link from "next/link";
 import { WORKSTATION_PROJECTS } from "@/data/projects";
 import { WorkstationProject } from "@/types/project";
 import { ProjectDetailsModal } from "@/components/workstation/ProjectDetailsModal";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 type FilterType = "ALL" | "FILMS" | "PHOTOS" | "3D";
 
@@ -142,10 +143,11 @@ export default function ArchivePage() {
               className="group relative block aspect-[16/10] overflow-hidden rounded-sm bg-black border border-white/[0.08] hover:border-white/40 transition-all duration-200 focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none cursor-pointer text-left w-full"
             >
               <img
-                src={item.image}
+                src={getOptimizedImageUrl(item.image, 384)}
                 alt={item.title}
                 className="w-full h-full object-contain"
                 loading="lazy"
+                decoding="async"
               />
 
               {/* Minimal Hover Overlay with Title */}

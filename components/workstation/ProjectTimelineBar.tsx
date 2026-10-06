@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from "react";
 import { WorkstationProject } from "@/types/project";
 import { getClipTheme } from "@/lib/projectUtils";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 interface ProjectTimelineBarProps {
   projects: WorkstationProject[];
@@ -118,7 +119,7 @@ export function ProjectTimelineBar({
                     style={isActive ? { borderColor: `${theme.colorHex}70` } : undefined}
                   >
                     <img
-                      src={poster}
+                      src={getOptimizedImageUrl(poster, 128)}
                       alt={proj.title}
                       onError={(e) => {
                         const target = e.currentTarget;
@@ -132,6 +133,7 @@ export function ProjectTimelineBar({
                         isActive ? "opacity-100" : "opacity-80 group-hover:opacity-100"
                       }`}
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
 

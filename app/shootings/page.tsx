@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 import { WORKSTATION_PROJECTS } from "@/data/projects";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 export const metadata: Metadata = {
   title: "Shootings & Stills — Tommaso Ruella",
@@ -74,9 +75,12 @@ export default function ShootingsPage() {
                   key={idx}
                   className="relative aspect-[4/3] rounded-xl overflow-hidden bg-zinc-950 border border-white/[0.08] group"
                 >
-                  <div
-                    className="w-full h-full bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-104"
-                    style={{ backgroundImage: `url(${img})` }}
+                  <img
+                    src={getOptimizedImageUrl(img, 1080, 80)}
+                    alt={`${series.title} ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-104"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="optical-glare" />
                 </div>

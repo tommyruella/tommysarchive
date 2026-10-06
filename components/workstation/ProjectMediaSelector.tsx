@@ -2,6 +2,7 @@
 
 import React from "react";
 import { WorkstationProject } from "@/types/project";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 interface ProjectMediaSelectorProps {
   project: WorkstationProject;
@@ -49,7 +50,7 @@ export function ProjectMediaSelector({
         >
           <div className="relative w-full overflow-hidden bg-black/80 rounded-lg">
             <img
-              src={cleanPoster}
+              src={getOptimizedImageUrl(cleanPoster, 384)}
               alt={project.title}
               onError={(e) => {
                 const target = e.currentTarget;
@@ -59,6 +60,7 @@ export function ProjectMediaSelector({
               }}
               className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-transform duration-300 ease-out"
               loading="lazy"
+              decoding="async"
             />
             <div className="optical-glare" />
             {activeMediaIndex === 0 && (
@@ -86,10 +88,11 @@ export function ProjectMediaSelector({
               >
                 <div className="relative w-full overflow-hidden bg-black/80 rounded-lg">
                   <img
-                    src={still.url}
+                    src={getOptimizedImageUrl(still.url, 384)}
                     alt={`${project.title} Still ${idx + 1}`}
                     className="w-full h-auto block filter contrast-105 group-hover:scale-[1.03] transition-transform duration-300 ease-out"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="optical-glare" />
                   {isSelected && (

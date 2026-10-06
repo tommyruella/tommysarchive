@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { WorkstationProject, ProjectStill } from "@/types/project";
 import { ChevronLeft, ChevronRight, Play, Pause, LayoutGrid, Film } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 interface RecentPhotosViewerProps {
   project: WorkstationProject;
@@ -223,10 +224,11 @@ export function RecentPhotosViewer({
                     title={`Visualizza ${section.title} — Still ${globalIndex + 1}`}
                   >
                     <img
-                      src={still.url}
+                      src={getOptimizedImageUrl(still.url, 640, 75)}
                       alt={`${section.title} ${globalIndex + 1}`}
                       className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-transform duration-500 ease-out"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="optical-glare" />
 
@@ -270,9 +272,11 @@ export function RecentPhotosViewer({
             <div className="relative max-w-full max-h-full flex items-center justify-center overflow-hidden rounded-xl bg-black border border-white/[0.08] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] p-1">
               <img
                 key={currentPhoto?.url}
-                src={currentPhoto?.url}
+                src={getOptimizedImageUrl(currentPhoto?.url, 1920, 85)}
                 alt={project.title}
                 className="max-h-[58vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-200"
+                decoding="async"
+                fetchPriority="high"
               />
 
               {/* Autoplay Progress Bar */}

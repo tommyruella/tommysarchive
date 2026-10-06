@@ -5,6 +5,7 @@ import Link from "next/link";
 import { WorkstationProject } from "@/types/project";
 import { X, ArrowUpRight } from "lucide-react";
 import { getProjectEditorial, getClipTheme } from "@/lib/projectUtils";
+import { getOptimizedImageUrl } from "@/lib/mediaOptimizer";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -131,7 +132,7 @@ export function ProjectDetailsModal({
           {/* Master Media Frame */}
           <div className="relative aspect-video w-full rounded-sm overflow-hidden bg-black border border-white/[0.08]">
             <img
-              src={project.primaryMedia.poster}
+              src={getOptimizedImageUrl(project.primaryMedia.poster, 1080)}
               alt={project.title}
               onError={(e) => {
                 const target = e.currentTarget;
@@ -142,6 +143,7 @@ export function ProjectDetailsModal({
                 }
               }}
               className="w-full h-full object-contain"
+              decoding="async"
             />
 
             {showWorkstationLink && (
@@ -291,10 +293,11 @@ export function ProjectDetailsModal({
                     title={`Visualizza frame ${idx + 1}`}
                   >
                     <img
-                      src={still.url}
+                      src={getOptimizedImageUrl(still.url, 384)}
                       alt={`${project.title} frame ${idx + 1}`}
                       className="w-full h-full object-contain"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
                       <span className="text-[10px] font-mono tabular-nums text-white">
