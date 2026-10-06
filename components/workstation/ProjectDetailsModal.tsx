@@ -142,7 +142,11 @@ export function ProjectDetailsModal({
                     : project.primaryMedia.poster;
                 }
               }}
-              className="w-full h-full object-contain"
+              onLoad={(e) => {
+                e.currentTarget.classList.remove("opacity-0");
+                e.currentTarget.classList.add("opacity-100");
+              }}
+              className="w-full h-full object-contain transition-opacity duration-300 opacity-0"
               decoding="async"
             />
 
@@ -295,8 +299,11 @@ export function ProjectDetailsModal({
                     <img
                       src={getOptimizedImageUrl(still.url, 384)}
                       alt={`${project.title} frame ${idx + 1}`}
-                      className="w-full h-full object-contain"
-                      loading="lazy"
+                      onLoad={(e) => {
+                        e.currentTarget.classList.remove("opacity-0");
+                        e.currentTarget.classList.add("opacity-100");
+                      }}
+                      className="w-full h-full object-contain transition-opacity duration-300 opacity-0"
                       decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">

@@ -52,14 +52,17 @@ export function ProjectMediaSelector({
             <img
               src={getOptimizedImageUrl(cleanPoster, 384)}
               alt={project.title}
+              onLoad={(e) => {
+                e.currentTarget.classList.remove("opacity-0");
+                e.currentTarget.classList.add("opacity-100");
+              }}
               onError={(e) => {
                 const target = e.currentTarget;
                 if (!target.src.includes("hqdefault.jpg")) {
                   target.src = project.primaryMedia.poster;
                 }
               }}
-              className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-transform duration-300 ease-out"
-              loading="lazy"
+              className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-all duration-300 ease-out opacity-0"
               decoding="async"
             />
             <div className="optical-glare" />
@@ -90,8 +93,11 @@ export function ProjectMediaSelector({
                   <img
                     src={getOptimizedImageUrl(still.url, 384)}
                     alt={`${project.title} Still ${idx + 1}`}
-                    className="w-full h-auto block filter contrast-105 group-hover:scale-[1.03] transition-transform duration-300 ease-out"
-                    loading="lazy"
+                    onLoad={(e) => {
+                      e.currentTarget.classList.remove("opacity-0");
+                      e.currentTarget.classList.add("opacity-100");
+                    }}
+                    className="w-full h-auto block filter contrast-105 group-hover:scale-[1.03] transition-all duration-300 ease-out opacity-0"
                     decoding="async"
                   />
                   <div className="optical-glare" />

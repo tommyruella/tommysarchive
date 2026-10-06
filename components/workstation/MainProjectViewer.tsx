@@ -362,7 +362,10 @@ export function MainProjectViewer({
                   <img
                     src={getOptimizedImageUrl(cleanPoster, 1920, 75)}
                     alt={project.title}
-                    className="w-full h-full object-contain select-none"
+                    onLoad={() => setLoadedDisplayUrl(cleanPoster)}
+                    className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
+                      loadedDisplayUrl === cleanPoster ? "opacity-100" : "opacity-0"
+                    }`}
                     decoding="async"
                   />
                 </div>

@@ -106,7 +106,11 @@ export function AboutWorkstationDrawer({
               <img
                 src={getOptimizedImageUrl(resolveMediaUrl("/projects/esothia/02.png"), 128)}
                 alt="Tommaso Ruella"
-                className="w-full h-full object-cover object-center"
+                onLoad={(e) => {
+                  e.currentTarget.classList.remove("opacity-0");
+                  e.currentTarget.classList.add("opacity-100");
+                }}
+                className="w-full h-full object-cover object-center transition-opacity duration-300 opacity-0"
                 decoding="async"
               />
             </div>

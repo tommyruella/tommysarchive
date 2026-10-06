@@ -15,6 +15,7 @@ function getPreloadAssetList(): string[] {
   const assetSet = new Set<string>();
 
   WORKSTATION_PROJECTS.forEach((project) => {
+    // 1. Hero Cover & Timeline Thumbnail for every single project
     let poster = project.primaryMedia.poster;
     if (!poster && project.primaryMedia.youtubeId) {
       poster = `https://img.youtube.com/vi/${project.primaryMedia.youtubeId}/mqdefault.jpg`;
@@ -22,7 +23,7 @@ function getPreloadAssetList(): string[] {
 
     if (poster) {
       const clean = getCleanPoster(poster, project.primaryMedia.youtubeId);
-      // Main hero viewer resolution (1920px)
+      // Hero resolution (1920px)
       const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
       if (heroUrl) assetSet.add(heroUrl);
 
@@ -31,13 +32,17 @@ function getPreloadAssetList(): string[] {
       if (thumbUrl) assetSet.add(thumbUrl);
     }
 
-    // Lead still for image collections
+    // 2. Lead stills for all projects (so switching projects has zero delay)
     if (project.stills && project.stills.length > 0) {
-      const firstStill = project.stills[0]?.url;
-      if (firstStill) {
-        const stillUrl = getOptimizedImageUrl(firstStill, 1920, 75);
-        if (stillUrl) assetSet.add(stillUrl);
-      }
+      project.stills.slice(0, 6).forEach((still) => {
+        if (still.url) {
+          const stillHero = getOptimizedImageUrl(still.url, 1920, 75);
+          if (stillHero) assetSet.add(stillHero);
+
+          const stillGrid = getOptimizedImageUrl(still.url, 640, 75);
+          if (stillGrid) assetSet.add(stillGrid);
+        }
+      });
     }
   });
 
@@ -59,10 +64,10 @@ export function CinemaLoader() {
     const assets = getPreloadAssetList();
     totalAssetsRef.current = assets.length;
 
-    // Safety fallback: after 8.5 seconds, force proceed even if network stalls
+    // Safety fallback: after 9.5 seconds, force proceed even if network stalls
     const safetyTimeout = setTimeout(() => {
       isAllLoadedRef.current = true;
-    }, 8500);
+    }, 9500);
 
     const checkAllComplete = () => {
       if (loadedCountRef.current >= totalAssetsRef.current) {
@@ -70,7 +75,7 @@ export function CinemaLoader() {
       }
     };
 
-    // Preload and decode every asset in parallel
+    // Preload and hardware-decode every asset in parallel
     assets.forEach((url) => {
       const img = new Image();
       img.src = url;
@@ -98,15 +103,13 @@ export function CinemaLoader() {
       }
     });
 
-    // Minimum cinematic calibration duration (1.4s) for aesthetic elegance
-    const MIN_CALIBRATION_MS = 1400;
+    // Calibrated studio duration: 4.5 seconds (4500ms) as requested
+    const TOTAL_CALIBRATION_MS = 4500;
 
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTimeRef.current;
-      const total = totalAssetsRef.current || 1;
-      const downloadRatio = Math.min(loadedCountRef.current / total, 1);
-      const isLoaded = isAllLoadedRef.current || loadedCountRef.current >= total;
-      const minTimePassed = elapsed >= MIN_CALIBRATION_MS;
+      const timeRatio = Math.min(elapsed / TOTAL_CALIBRATION_MS, 1);
+      const isLoaded = isAllLoadedRef.current || loadedCountRef.current >= (totalAssetsRef.current || 1);
 
       setCounter((prev) => {
         if (prev >= 100) {
@@ -114,20 +117,25 @@ export function CinemaLoader() {
           return 100;
         }
 
-        // If all assets are fully downloaded and decoded, and minimum time passed, finish to 100%
-        if (isLoaded && minTimePassed) {
-          const next = prev + Math.floor(Math.random() * 8) + 8;
-          return next >= 100 ? 100 : next;
+        // Target percentage based on elapsed time over 4.5 seconds
+        let target = Math.floor(timeRatio * 100);
+
+        // If time reaches near 90% but some assets are still in flight, hold at 92%
+        if (!isLoaded && target > 92) {
+          target = 92;
         }
 
-        // While still downloading assets, advance smoothly proportionally to download progress
-        // capped at 88% so it NEVER completes prematurely
-        const targetPercent = Math.min(Math.floor(downloadRatio * 88), 88);
-        if (prev < targetPercent) {
-          return prev + Math.floor(Math.random() * 4) + 2;
-        } else if (prev < 85) {
-          // Slow incremental crawl while waiting for heavy assets
-          return prev + (Math.random() > 0.6 ? 1 : 0);
+        // Only reach 100% when time >= 4.5s AND all assets are loaded and decoded
+        if (target >= 100) {
+          if (isLoaded && elapsed >= TOTAL_CALIBRATION_MS) {
+            return 100;
+          }
+          return 99;
+        }
+
+        // Smooth steady progress toward target
+        if (prev < target) {
+          return prev + 1;
         }
 
         return prev;
@@ -140,16 +148,16 @@ export function CinemaLoader() {
     };
   }, []);
 
-  // When counter reaches 100, trigger cinematic reveal
+  // When counter reaches 100, trigger cinematic shutter reveal
   useEffect(() => {
     if (counter >= 100) {
       const revealTimer = setTimeout(() => {
         setIsRevealing(true);
-      }, 200);
+      }, 250);
 
       const unmountTimer = setTimeout(() => {
         setMounted(false);
-      }, 700);
+      }, 850);
 
       return () => {
         clearTimeout(revealTimer);
@@ -164,7 +172,7 @@ export function CinemaLoader() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] bg-[#000000] flex flex-col justify-between p-6 sm:p-12 pointer-events-none transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none ${
+      className={`fixed inset-0 z-[100] bg-[#000000] flex flex-col justify-between p-6 sm:p-12 pointer-events-none transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] select-none ${
         isRevealing ? "opacity-0 scale-[1.01]" : "opacity-100 scale-100"
       }`}
       aria-hidden="true"
@@ -180,15 +188,15 @@ export function CinemaLoader() {
         </div>
 
         {/* Minimal calibrated progress bar */}
-        <div className="w-40 sm:w-56 h-[3px] rounded-full bg-white/10 overflow-hidden relative">
+        <div className="w-44 sm:w-64 h-[3px] rounded-full bg-white/10 overflow-hidden relative">
           <div
-            className="h-full bg-white rounded-full transition-transform duration-150 ease-out origin-left will-change-transform"
+            className="h-full bg-white rounded-full transition-transform duration-100 ease-out origin-left will-change-transform"
             style={{ transform: `scaleX(${currentPercent / 100})` }}
           />
         </div>
 
-        <div className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest pt-1">
-          {currentPercent < 100 ? "Calibrating Optical Assets" : "Studio Calibrated"}
+        <div className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest pt-1">
+          {currentPercent < 100 ? "Calibrating Optical Assets" : "Studio Calibrated · 2.39:1"}
         </div>
       </div>
 

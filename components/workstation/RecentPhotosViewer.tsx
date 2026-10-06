@@ -227,8 +227,11 @@ export function RecentPhotosViewer({
                     <img
                       src={getOptimizedImageUrl(still.url, 640, 75)}
                       alt={`${section.title} ${globalIndex + 1}`}
-                      className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-transform duration-500 ease-out"
-                      loading="lazy"
+                      onLoad={(e) => {
+                        e.currentTarget.classList.remove("opacity-0");
+                        e.currentTarget.classList.add("opacity-100");
+                      }}
+                      className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-all duration-300 ease-out opacity-0"
                       decoding="async"
                     />
                     <div className="optical-glare" />

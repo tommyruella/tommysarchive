@@ -132,7 +132,7 @@ export function ProjectTimelineBar({
                       className={`w-full h-full object-contain ${
                         isActive ? "opacity-100" : "opacity-80 group-hover:opacity-100"
                       }`}
-                      loading="lazy"
+                      loading="eager"
                       decoding="async"
                     />
                   </div>
