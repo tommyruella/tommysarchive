@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#000000"/>
+  <!-- Reticle Corner Marks -->
+  <path d="M4 8 V4 H8" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <path d="M28 8 V4 H24" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <path d="M4 24 V28 H8" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <path d="M28 24 V28 H24" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <!-- Monogram TR -->
+  <text x="16" y="20.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="-0.5">TR</text>
+</svg>

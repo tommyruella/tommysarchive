@@ -1,0 +1,274 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg-pitch: #000000;
+  --bg-surface: #07070a;
+  --bg-surface-elevated: #0f0f14;
+  --bg-surface-card: #121218;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(255, 255, 255, 0.3);
+  --chrome-highlight: #ffffff;
+}
+
+html {
+  color-scheme: dark;
+  background-color: #000000;
+  overscroll-behavior-y: none;
+}
+
+body {
+  background-color: #000000;
+  color: #ededed;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+}
+
+::selection {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Touch & Interaction defaults (Web Interface Guidelines) */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+[role="tab"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Accessible focus visible rings */
+:focus-visible {
+  outline: none;
+}
+
+/* Reduced motion preference (Web Interface Guidelines) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================== */
+/* 1. FLOATING LIQUID GLASS NAVBAR                                */
+/* ============================================================== */
+
+.frosted-dock {
+  background: rgba(14, 14, 18, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+}
+
+.frosted-active-circle {
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.frosted-circle-btn {
+  background: rgba(14, 14, 18, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.25), 0 10px 30px -10px rgba(0, 0, 0, 0.8);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.frosted-circle-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: scale(1.05);
+}
+
+/* ============================================================== */
+/* 2. MODERN DAVINCI WORKSTATION (CLEAN, MODERATE RADIUS, CHARCOAL)*/
+/* ============================================================== */
+
+.davinci-panel {
+  background: #0d0d12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem; /* 12px (rounded-xl) - sleek, professional & technical */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+.davinci-card {
+  position: relative;
+  background: #111116;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.5rem; /* 8px (rounded-lg) - sharp & modern */
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease,
+    box-shadow 0.35s ease;
+  overflow: hidden;
+}
+
+.davinci-card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75);
+}
+
+.davinci-subtle-glow {
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 70%
+  );
+}
+
+.optical-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 15%,
+    rgba(255, 255, 255, 0.03) 35%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 75%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.davinci-card:hover .optical-glare,
+.group:hover .optical-glare {
+  transform: translateX(100%);
+}
+
+/* ============================================================== */
+/* 3. CINEMATIC ANIMATIONS & ENTRANCES                           */
+/* ============================================================== */
+
+@keyframes text-reveal-up {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: text-reveal-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modal-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-modal-slide-up {
+  animation: modal-slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes backdrop-blur-fade {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+.animate-backdrop-blur-fade {
+  animation: backdrop-blur-fade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, backdrop-filter;
+}
+
+/* ============================================================== */
+/* 4. HIDDEN SCROLLBARS (ZERO CLUTTER, FULL ACCESSIBLE SCROLLING) */
+/* ============================================================== */
+
+.custom-workstation-scrollbar,
+.scrollbar-none,
+.no-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.custom-workstation-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* ============================================================== */
+/* 5. YOUTUBE COMPACT FRAME & FULLSCREEN CURSOR AUTO-HIDE         */
+/* ============================================================== */
+.youtube-compact-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140%;
+  height: 140%;
+  transform: translate(-50%, -50%) scale(0.7142857);
+  transform-origin: center center;
+}
+
+.youtube-compact-frame:fullscreen,
+.youtube-compact-frame:-webkit-full-screen,
+iframe:fullscreen,
+iframe:-webkit-full-screen {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  top: 0 !important;
+  left: 0 !important;
+  cursor: none;
+}
+
+/* Auto-hide cursor when idle in fullscreen */
+body.hide-cursor,
+body.hide-cursor *,
+body.hide-cursor iframe,
+body.hide-cursor iframe:fullscreen,
+body.hide-cursor iframe:-webkit-full-screen,
+html.hide-cursor,
+html.hide-cursor * {
+  cursor: none !important;
+}
