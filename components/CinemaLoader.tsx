@@ -49,37 +49,67 @@ function preloadAndDecodeImage(src: string): Promise<boolean> {
   });
 }
 
-function getEssentialAssets(activeProjectId?: string): string[] {
-  const assetSet = new Set<string>();
+interface AssetQueue {
+  priority: string[];
+  secondary: string[];
+}
 
-  // 1. Active project hero poster (1920px) + lead scene stills (1920px)
+function getEssentialAssets(activeProjectId?: string): AssetQueue {
+  const prioritySet = new Set<string>();
+  const secondarySet = new Set<string>();
+
+  // 1. Active project hero poster + lead scene stills (TOP PRIORITY)
   const activeProj =
     WORKSTATION_PROJECTS.find(
       (p) => p.id === activeProjectId || p.slug === activeProjectId
     ) || WORKSTATION_PROJECTS[0];
 
   if (activeProj) {
+    const isPhotoProject =
+      activeProj.category === "PHOTO" ||
+      activeProj.category === "PHOTOGRAPHY" ||
+      activeProj.slug === "recent-works-foto";
+
     let poster = activeProj.primaryMedia.poster;
     if (!poster && activeProj.primaryMedia.youtubeId) {
       poster = `https://img.youtube.com/vi/${activeProj.primaryMedia.youtubeId}/maxresdefault.jpg`;
     }
-    if (poster) {
-      const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
-      const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
-      if (heroUrl) assetSet.add(heroUrl);
-    }
 
-    if (activeProj.stills && activeProj.stills.length > 0) {
-      activeProj.stills.slice(0, 4).forEach((still) => {
-        if (still.url) {
-          const stillHero = getOptimizedImageUrl(still.url, 1920, 75);
-          if (stillHero) assetSet.add(stillHero);
-        }
-      });
+    if (isPhotoProject) {
+      // For photos: Preload the lead stills at 640px (exact resolution of the Pinterest masonry grid)
+      if (activeProj.stills && activeProj.stills.length > 0) {
+        activeProj.stills.slice(0, 10).forEach((still) => {
+          if (still.url) {
+            const gridUrl = getOptimizedImageUrl(still.url, 640, 75);
+            if (gridUrl) prioritySet.add(gridUrl);
+          }
+        });
+      }
+      // Lead photo cover for carousel
+      if (poster) {
+        const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
+        const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
+        if (heroUrl) prioritySet.add(heroUrl);
+      }
+    } else {
+      // For video projects: Preload 1920px hero poster + lead 4 stills
+      if (poster) {
+        const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
+        const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
+        if (heroUrl) prioritySet.add(heroUrl);
+      }
+      if (activeProj.stills && activeProj.stills.length > 0) {
+        activeProj.stills.slice(0, 4).forEach((still) => {
+          if (still.url) {
+            const stillHero = getOptimizedImageUrl(still.url, 1920, 75);
+            if (stillHero) prioritySet.add(stillHero);
+          }
+        });
+      }
     }
   }
 
-  // 2. All 11 project timeline thumbnails (128px) so the filmstrip renders instantly
+  // 2. Secondary queue: Timeline thumbnails (128px) so the filmstrip renders smoothly
   WORKSTATION_PROJECTS.forEach((proj) => {
     let poster = proj.primaryMedia.poster;
     if (!poster && proj.primaryMedia.youtubeId) {
@@ -88,11 +118,16 @@ function getEssentialAssets(activeProjectId?: string): string[] {
     if (poster) {
       const clean = getCleanPoster(poster, proj.primaryMedia.youtubeId);
       const thumbUrl = getOptimizedImageUrl(clean, 128, 75);
-      if (thumbUrl) assetSet.add(thumbUrl);
+      if (thumbUrl && !prioritySet.has(thumbUrl)) {
+        secondarySet.add(thumbUrl);
+      }
     }
   });
 
-  return Array.from(assetSet);
+  return {
+    priority: Array.from(prioritySet),
+    secondary: Array.from(secondarySet),
+  };
 }
 
 let isSessionCalibrated = false;
@@ -132,6 +167,9 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
 
   // If already calibrated in this session, immediately notify parent and don't render
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.title = "Tommaso Ruella";
+    }
     if (hasSessionCalibrated()) {
       onCompleteRef.current?.();
       setMounted(false);
@@ -141,7 +179,7 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
   const hasFinishedRef = useRef(false);
 
   useEffect(() => {
-    const assets = getEssentialAssets(activeProjectId);
+    const { priority, secondary } = getEssentialAssets(activeProjectId);
     let isCancelled = false;
     let assetsLoaded = false;
 
@@ -150,9 +188,12 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
       assetsLoaded = true;
     }, 5500);
 
-    // Preload & GPU-decode every critical asset in parallel
-    Promise.all(assets.map(preloadAndDecodeImage)).then(() => {
+    // Preload & GPU-decode priority assets FIRST (Active project lead photos/stills)
+    Promise.all(priority.map(preloadAndDecodeImage)).then(() => {
+      if (isCancelled) return;
       assetsLoaded = true;
+      // Secondary timeline thumbnails preloaded in background without blocking primary content
+      Promise.all(secondary.map(preloadAndDecodeImage)).catch(() => {});
     });
 
     // Total calibrated duration: 4.8 seconds (4800ms)

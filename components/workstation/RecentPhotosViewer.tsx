@@ -219,24 +219,34 @@ export function RecentPhotosViewer({
 
               {/* Dynamic Pinterest Masonry Grid */}
               <div className="columns-2 sm:columns-3 lg:columns-4 gap-2.5 sm:gap-3 space-y-2.5 sm:space-y-3">
-                {section.stills.map(({ still, globalIndex }) => (
-                  <button
-                    key={still.id}
-                    onClick={() => handlePhotoClick(globalIndex)}
-                    className="w-full break-inside-avoid text-left relative block rounded-lg overflow-hidden bg-black/60 border border-white/[0.08] hover:border-white/40 group cursor-pointer transition-all duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/80"
-                    title={`Visualizza ${section.title} — Still ${globalIndex + 1}`}
-                  >
-                    <img
-                      src={getOptimizedImageUrl(still.url, 640, 75)}
-                      alt={`${section.title} ${globalIndex + 1}`}
-                      onLoad={(e) => {
-                        e.currentTarget.classList.remove("opacity-0");
-                        e.currentTarget.classList.add("opacity-100");
-                      }}
-                      className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-all duration-300 ease-out opacity-0"
-                      decoding="async"
-                    />
-                    <div className="optical-glare" />
+                {section.stills.map(({ still, globalIndex }) => {
+                  const isPriorityPhoto = globalIndex < 8;
+                  return (
+                    <button
+                      key={still.id}
+                      onClick={() => handlePhotoClick(globalIndex)}
+                      className="w-full break-inside-avoid text-left relative block rounded-lg overflow-hidden bg-black/60 border border-white/[0.08] hover:border-white/40 group cursor-pointer transition-all duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/80"
+                      title={`Visualizza ${section.title} — Still ${globalIndex + 1}`}
+                    >
+                      <img
+                        src={getOptimizedImageUrl(still.url, 640, 75)}
+                        alt={`${section.title} ${globalIndex + 1}`}
+                        loading={isPriorityPhoto ? "eager" : "lazy"}
+                        fetchPriority={globalIndex < 4 ? "high" : "auto"}
+                        ref={(el) => {
+                          if (el && el.complete) {
+                            el.classList.remove("opacity-0");
+                            el.classList.add("opacity-100");
+                          }
+                        }}
+                        onLoad={(e) => {
+                          e.currentTarget.classList.remove("opacity-0");
+                          e.currentTarget.classList.add("opacity-100");
+                        }}
+                        className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-all duration-300 ease-out opacity-0"
+                        decoding={isPriorityPhoto ? "sync" : "async"}
+                      />
+                      <div className="optical-glare" />
 
                     {/* Minimalist Hover Stamp */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end justify-between p-2">
@@ -248,7 +258,8 @@ export function RecentPhotosViewer({
                       </span>
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </section>
           ))}
