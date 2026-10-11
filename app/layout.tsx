@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ConditionalFooter } from "@/components/ConditionalFooter";
+import { Analytics } from "@vercel/analytics/next";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -97,6 +98,7 @@ export default function RootLayout({
 
         {/* Conditional Footer (Hidden on homepage timeline, rendered on other pages) */}
         <ConditionalFooter />
+        <Analytics />
       </body>
     </html>
   );
