@@ -37,7 +37,12 @@ export function MainProjectViewer({
   onOpenDetails,
 }: MainProjectViewerProps) {
   // If viewing Recent Photos, render dedicated sectioned Pinterest / Carousel viewer
-  if (project.slug === "recent-works-foto" || project.id === "11") {
+  if (
+    project.slug === "recent-works-foto" ||
+    project.category === "PHOTO" ||
+    project.id === "01" ||
+    project.id === "11"
+  ) {
     return (
       <RecentPhotosViewer
         project={project}
