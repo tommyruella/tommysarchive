@@ -40,7 +40,6 @@ export function MainProjectViewer({
   if (
     project.slug === "recent-works-foto" ||
     project.category === "PHOTO" ||
-    project.id === "01" ||
     project.id === "11"
   ) {
     return (
@@ -323,6 +322,12 @@ export function MainProjectViewer({
                       <img
                         src={getOptimizedImageUrl(cleanPoster, 1920, 75)}
                         alt={project.title}
+                        loading="eager"
+                        ref={(el) => {
+                          if (el && el.complete && loadedDisplayUrl !== cleanPoster) {
+                            setLoadedDisplayUrl(cleanPoster);
+                          }
+                        }}
                         onLoad={() => setLoadedDisplayUrl(cleanPoster)}
                         onError={(e) => {
                           const target = e.currentTarget;
@@ -335,7 +340,7 @@ export function MainProjectViewer({
                         className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
                           loadedDisplayUrl === cleanPoster ? "opacity-100" : "opacity-0"
                         }`}
-                        decoding="async"
+                        decoding="sync"
                         fetchPriority="high"
                       />
 
@@ -367,11 +372,13 @@ export function MainProjectViewer({
                   <img
                     src={getOptimizedImageUrl(cleanPoster, 1920, 75)}
                     alt={project.title}
+                    loading="eager"
                     onLoad={() => setLoadedDisplayUrl(cleanPoster)}
                     className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
                       loadedDisplayUrl === cleanPoster ? "opacity-100" : "opacity-0"
                     }`}
-                    decoding="async"
+                    decoding="sync"
+                    fetchPriority="high"
                   />
                 </div>
               )
@@ -382,11 +389,17 @@ export function MainProjectViewer({
                   key={activeStillUrl}
                   src={getOptimizedImageUrl(activeStillUrl, 1920, 75)}
                   alt={project.title}
+                  loading="eager"
+                  ref={(el) => {
+                    if (el && el.complete && loadedDisplayUrl !== activeStillUrl) {
+                      setLoadedDisplayUrl(activeStillUrl);
+                    }
+                  }}
                   onLoad={() => setLoadedDisplayUrl(activeStillUrl)}
                   className={`w-full h-full object-contain select-none transition-opacity duration-300 ease-out ${
                     loadedDisplayUrl === activeStillUrl ? "opacity-100" : "opacity-0"
                   }`}
-                  decoding="async"
+                  decoding="sync"
                   fetchPriority="high"
                 />
               </div>

@@ -58,7 +58,7 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
   const prioritySet = new Set<string>();
   const secondarySet = new Set<string>();
 
-  // 1. Active project hero poster + lead scene stills (TOP PRIORITY)
+  // 1. Active project hero poster + lead scene stills (TOP PRIORITY - defaults to 01 London March '26)
   const activeProj =
     WORKSTATION_PROJECTS.find(
       (p) => p.id === activeProjectId || p.slug === activeProjectId
@@ -76,7 +76,7 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
     }
 
     if (isPhotoProject) {
-      // For photos: Preload the lead stills at 640px (exact resolution of the Pinterest masonry grid)
+      // Only if deep-linked directly to Recent Photos: preload lead masonry stills at 640px
       if (activeProj.stills && activeProj.stills.length > 0) {
         activeProj.stills.slice(0, 10).forEach((still) => {
           if (still.url) {
@@ -85,14 +85,13 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
           }
         });
       }
-      // Lead photo cover for carousel
       if (poster) {
         const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
         const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
         if (heroUrl) prioritySet.add(heroUrl);
       }
     } else {
-      // For video projects: Preload 1920px hero poster + lead 4 stills
+      // Standard lead project (01 London): Preload 1920px hero poster + lead 4 stills
       if (poster) {
         const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
         const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
@@ -109,8 +108,8 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
     }
   }
 
-  // 2. Secondary queue: Timeline thumbnails (128px) so the filmstrip renders smoothly
-  WORKSTATION_PROJECTS.forEach((proj) => {
+  // 2. Timeline thumbnails (128px): First 6 visible clips in priority queue, remaining (including #11 Recent Photos) in secondary queue
+  WORKSTATION_PROJECTS.forEach((proj, idx) => {
     let poster = proj.primaryMedia.poster;
     if (!poster && proj.primaryMedia.youtubeId) {
       poster = `https://img.youtube.com/vi/${proj.primaryMedia.youtubeId}/mqdefault.jpg`;
@@ -119,10 +118,42 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
       const clean = getCleanPoster(poster, proj.primaryMedia.youtubeId);
       const thumbUrl = getOptimizedImageUrl(clean, 128, 75);
       if (thumbUrl && !prioritySet.has(thumbUrl)) {
-        secondarySet.add(thumbUrl);
+        if (idx < 6 || proj.id === activeProj?.id) {
+          prioritySet.add(thumbUrl);
+        } else {
+          secondarySet.add(thumbUrl);
+        }
       }
     }
   });
+
+  // 3. Secondary queue: Next immediate timeline project hero posters (02, 03), followed last by Recent Photos (#11) lead grid stills
+  WORKSTATION_PROJECTS.slice(1, 4).forEach((proj) => {
+    let poster = proj.primaryMedia.poster;
+    if (!poster && proj.primaryMedia.youtubeId) {
+      poster = `https://img.youtube.com/vi/${proj.primaryMedia.youtubeId}/maxresdefault.jpg`;
+    }
+    if (poster) {
+      const clean = getCleanPoster(poster, proj.primaryMedia.youtubeId);
+      const heroUrl = getOptimizedImageUrl(clean, 1920, 75);
+      if (heroUrl && !prioritySet.has(heroUrl)) {
+        secondarySet.add(heroUrl);
+      }
+    }
+  });
+
+  // Lowest priority (last project in timeline): warm lead 6 stills of Recent Photos in background
+  const photosProj = WORKSTATION_PROJECTS[WORKSTATION_PROJECTS.length - 1];
+  if (photosProj && photosProj.slug === "recent-works-foto" && activeProj?.id !== photosProj.id) {
+    photosProj.stills.slice(0, 6).forEach((still) => {
+      if (still.url) {
+        const gridUrl = getOptimizedImageUrl(still.url, 640, 75);
+        if (gridUrl && !prioritySet.has(gridUrl)) {
+          secondarySet.add(gridUrl);
+        }
+      }
+    });
+  }
 
   return {
     priority: Array.from(prioritySet),

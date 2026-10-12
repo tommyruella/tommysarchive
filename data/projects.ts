@@ -11,33 +11,6 @@ const scannedStills = scannedStillsRecord as Record<string, string[]>;
 export const PROJECTS_METADATA: ProjectMetadata[] = [
   {
     id: "01",
-    slug: "recent-works-foto",
-    title: "Recent Photos",
-    year: "2024–2026",
-    category: "PHOTO",
-    typeLabel: "Selezione Fotografica",
-    role: "Fotografia & Color",
-    clipColor: "purple",
-    synopsis:
-      "Selezione curata di reportage e progetti di scatto (Londra '26, Madrid '26 e motorsport).",
-    primaryMedia: {
-      type: "image",
-      aspectRatio: "portrait",
-    },
-    technicalSpecs: {
-      camera: "Sony α6700 · Fujifilm",
-      software: "Lightroom · DaVinci Resolve",
-      colorGrade: "Custom Film Print Emulation",
-    },
-    credits: [
-      { role: "Fotografia", name: "Tommaso Ruella" },
-      { role: "Color Grading", name: "Tommaso Ruella" },
-    ],
-    links: [],
-    timelineWeight: 1.0,
-  },
-  {
-    id: "02",
     slug: "london",
     title: "London March '26",
     year: "2026",
@@ -65,7 +38,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.0,
   },
   {
-    id: "03",
+    id: "02",
     slug: "barca-2",
     title: "Barça July '25",
     year: "2025",
@@ -93,7 +66,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 0.9,
   },
   {
-    id: "04",
+    id: "03",
     slug: "ctrl-z",
     title: "CTRL+Z",
     year: "2025",
@@ -127,7 +100,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.1,
   },
   {
-    id: "05",
+    id: "04",
     slug: "hobbiton",
     title: "Hobbiton",
     year: "2025",
@@ -153,7 +126,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.0,
   },
   {
-    id: "06",
+    id: "05",
     slug: "timeless",
     title: "Timeless",
     year: "2024",
@@ -191,7 +164,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.3,
   },
   {
-    id: "07",
+    id: "06",
     slug: "donut-in-turin",
     title: "Donut in Turin",
     year: "2024",
@@ -217,7 +190,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 0.9,
   },
   {
-    id: "08",
+    id: "07",
     slug: "esothia",
     title: "Esothia",
     year: "2024",
@@ -251,7 +224,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.1,
   },
   {
-    id: "09",
+    id: "08",
     slug: "logo-animation",
     title: "Logo Animation",
     year: "2024",
@@ -277,7 +250,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.0,
   },
   {
-    id: "10",
+    id: "09",
     slug: "set-23-barca",
     title: "Barça Set '23",
     year: "2023",
@@ -305,7 +278,7 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
     timelineWeight: 1.0,
   },
   {
-    id: "11",
+    id: "10",
     slug: "valencia",
     title: "Valencia April '23",
     year: "2023",
@@ -331,6 +304,33 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
       { label: "Guarda su YT", url: "https://youtu.be/MgAYgd2AYT4?si=A5tHbElFPxYZ1mzJ" },
     ],
     timelineWeight: 0.9,
+  },
+  {
+    id: "11",
+    slug: "recent-works-foto",
+    title: "Recent Photos",
+    year: "2024–2026",
+    category: "PHOTO",
+    typeLabel: "Selezione Fotografica",
+    role: "Fotografia & Color",
+    clipColor: "purple",
+    synopsis:
+      "Selezione curata di reportage e progetti di scatto (Londra '26, Madrid '26 e motorsport).",
+    primaryMedia: {
+      type: "image",
+      aspectRatio: "portrait",
+    },
+    technicalSpecs: {
+      camera: "Sony α6700 · Fujifilm",
+      software: "Lightroom · DaVinci Resolve",
+      colorGrade: "Custom Film Print Emulation",
+    },
+    credits: [
+      { role: "Fotografia", name: "Tommaso Ruella" },
+      { role: "Color Grading", name: "Tommaso Ruella" },
+    ],
+    links: [],
+    timelineWeight: 1.0,
   },
 ];
 
