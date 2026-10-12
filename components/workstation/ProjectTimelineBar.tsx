@@ -55,7 +55,7 @@ export function ProjectTimelineBar({
               return (
                 <div
                   key={`ruler-${proj.id}`}
-                  className="min-w-[170px] sm:min-w-[210px] flex-shrink-0 flex items-center justify-between px-1"
+                  className="min-w-[148px] sm:min-w-[210px] flex-shrink-0 flex items-center justify-between px-1"
                 >
                   <div className="flex items-center gap-2">
                     <div
@@ -99,7 +99,7 @@ export function ProjectTimelineBar({
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => onSelectProject(proj.id)}
-                  className={`h-full min-h-[58px] sm:min-h-[64px] min-w-[170px] sm:min-w-[210px] flex-shrink-0 relative rounded-lg border text-left p-1.5 sm:p-2 flex items-center gap-2.5 sm:gap-3 transition-all duration-200 group cursor-pointer focus-visible:ring-1 focus-visible:outline-none ${
+                  className={`h-full min-h-[50px] sm:min-h-[64px] min-w-[148px] sm:min-w-[210px] flex-shrink-0 relative rounded-lg border text-left p-1.5 sm:p-2 flex items-center gap-2 sm:gap-3 transition-all duration-200 group cursor-pointer focus-visible:ring-1 focus-visible:outline-none ${
                     isActive
                       ? `bg-[#141216] ${theme.borderActive} ${theme.glowActive}`
                       : `bg-[#0b0b0f] border-white/[0.08] ${theme.borderHover} hover:bg-[#111116]`

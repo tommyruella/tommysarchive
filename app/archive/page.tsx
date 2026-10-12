@@ -21,6 +21,9 @@ interface ArchiveItem {
 
 export default function ArchivePage() {
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.title = "Tommaso Ruella";
+    }
     markSessionCalibrated();
   }, []);
 
@@ -80,30 +83,47 @@ export default function ArchivePage() {
     <div className="w-full min-h-screen flex flex-col bg-black text-zinc-100 select-none">
       {/* 1. SLIM BRUTALIST AUTHORIAL HEADER */}
       <header className="h-14 sm:h-16 px-4 sm:px-8 border-b border-white/[0.08] flex items-center justify-between bg-black sticky top-0 z-30 flex-shrink-0">
-        {/* Left: Author Brand (Pure name, no breadcrumbs) */}
+        {/* Left: Author Brand (TR on mobile, full name on desktop) */}
         <div className="flex items-center">
           <Link
             href="/"
-            className="group focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
-            aria-label="Torna alla Workstation"
+            aria-label="Torna alla Home"
+            className="text-sm sm:text-base font-black tracking-tight uppercase text-white hover:text-zinc-300 transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
           >
-            <span className="text-sm sm:text-base font-black tracking-tight uppercase text-white group-hover:text-zinc-300 transition-colors">
-              Tommaso Ruella
-            </span>
+            <span className="sm:hidden">TR</span>
+            <span className="hidden sm:inline">Tommaso Ruella</span>
           </Link>
         </div>
 
-        {/* Center: Category Filter Tabs (Pure Typographic Highlight) */}
+        {/* Right: Navigation (About penultimate, Timeline far right replacing Archive) */}
+        <nav aria-label="Navigazione principale" className="flex items-center gap-5 sm:gap-7">
+          <Link
+            href="/about"
+            className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+          >
+            About
+          </Link>
+          <Link
+            href="/"
+            className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+          >
+            Timeline
+          </Link>
+        </nav>
+      </header>
+
+      {/* 1B. DEDICATED ARCHIVE FILTER BAR (Centered, pure white highlight) */}
+      <div className="w-full px-4 sm:px-8 py-2.5 border-b border-white/[0.08] bg-black/95 backdrop-blur-sm sticky top-14 sm:top-16 z-20 flex items-center justify-center">
         <div
-          className="flex items-center gap-3 sm:gap-5"
+          className="flex items-center justify-center gap-5 sm:gap-7 overflow-x-auto no-scrollbar"
           role="tablist"
           aria-label="Filtri Categoria"
         >
           {[
-            { label: "Tutto", val: "ALL" },
             { label: "Film", val: "FILMS" },
             { label: "3D", val: "3D" },
             { label: "Foto", val: "PHOTOS" },
+            { label: "Tutto", val: "ALL" },
           ].map((tab) => {
             const isActive = filter === tab.val;
             return (
@@ -112,7 +132,7 @@ export default function ArchivePage() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setFilter(tab.val as FilterType)}
-                className={`py-1 text-[11px] sm:text-xs font-mono uppercase tracking-wider transition-colors duration-150 cursor-pointer bg-transparent border-0 focus-visible:outline-none ${
+                className={`py-1 text-[11px] sm:text-xs font-mono uppercase tracking-widest transition-colors duration-150 cursor-pointer bg-transparent border-0 flex-shrink-0 focus-visible:outline-none ${
                   isActive
                     ? "text-white font-bold"
                     : "text-zinc-500 hover:text-zinc-300"
@@ -123,21 +143,10 @@ export default function ArchivePage() {
             );
           })}
         </div>
-
-        {/* Right: Back to Timeline (Pure text highlight, no button container) */}
-        <div className="flex items-center">
-          <Link
-            href="/"
-            className="font-mono text-xs uppercase tracking-widest text-zinc-400 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none"
-            aria-label="Torna alla Timeline"
-          >
-            TIMELINE
-          </Link>
-        </div>
-      </header>
+      </div>
 
       {/* 2. CINEMA ARCHIVE FULLGRID: CLICKING OPENS CENTERED MODAL */}
-      <main className="flex-1 w-full p-2.5 sm:p-4 md:p-6">
+      <main className="flex-1 w-full p-2.5 pb-14 sm:p-4 md:p-6">
         <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-2.5">
           {filteredItems.map((item) => (
             <button
@@ -176,3 +185,4 @@ export default function ArchivePage() {
     </div>
   );
 }
+

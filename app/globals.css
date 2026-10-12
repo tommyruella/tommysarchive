@@ -94,6 +94,12 @@ textarea,
   transform: scale(1.05);
 }
 
+.modal-backdrop-blur {
+  background-color: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(28px) saturate(135%);
+  -webkit-backdrop-filter: blur(28px) saturate(135%);
+}
+
 /* ============================================================== */
 /* 2. MODERN DAVINCI WORKSTATION (CLEAN, MODERATE RADIUS, CHARCOAL)*/
 /* ============================================================== */
@@ -271,4 +277,99 @@ body.hide-cursor iframe:-webkit-full-screen,
 html.hide-cursor,
 html.hide-cursor * {
   cursor: none !important;
+}
+
+/* ============================================================== */
+/* 6. A4 EDITORIAL DOCUMENT & PRINT SPECIFICATIONS               */
+/* ============================================================== */
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure web navigation bars, overlays and external UI are suppressed on print */
+  .no-print,
+  nav,
+  header.no-print,
+  footer,
+  aside {
+    display: none !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .cv-a4-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cv-inner-container {
+    padding: 13mm 14mm !important;
+    height: 100% !important;
+  }
+
+  /* Preserve editorial grid in print mode */
+  .cv-grid-profile-edu {
+    display: grid !important;
+    grid-template-columns: 7fr 5fr !important;
+    column-gap: 28px !important;
+  }
+
+  .cv-profile-col {
+    grid-column: 1 / 2 !important;
+  }
+
+  .cv-edu-col {
+    grid-column: 2 / 3 !important;
+    border-left-width: 1px !important;
+    padding-left: 20px !important;
+  }
+
+  .cv-lower-grid {
+    display: grid !important;
+    grid-template-columns: 6fr 6fr !important;
+    column-gap: 28px !important;
+  }
+
+  .cv-software-col {
+    grid-column: 1 / 2 !important;
+  }
+
+  .cv-contact-lang-col {
+    grid-column: 2 / 3 !important;
+    padding-left: 16px !important;
+  }
 }

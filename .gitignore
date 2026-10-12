@@ -44,3 +44,9 @@ next-env.d.ts.bak
 # Local agent/IDE caches
 .antigravity/
 .claude/
+
+# Deprecated pages & subpages (preserved locally only, excluded from GitHub and Vercel)
+/deprecated-pages/
+/deprecated/
+*-deprecated/
+*deprecated*

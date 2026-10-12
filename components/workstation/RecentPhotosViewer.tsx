@@ -156,7 +156,10 @@ export function RecentPhotosViewer({
           <h2 className="text-xs sm:text-sm font-black tracking-tight text-white uppercase truncate">
             {project.title}
           </h2>
-          <span className="text-[10px] sm:text-xs font-mono text-zinc-400 tabular-nums uppercase hidden xs:inline">
+          <span className="text-[10px] font-mono text-zinc-400 tabular-nums uppercase sm:hidden">
+            [{totalPhotos}]
+          </span>
+          <span className="text-[10px] sm:text-xs font-mono text-zinc-400 tabular-nums uppercase hidden sm:inline">
             [{totalPhotos} SCATTI · {sections.length} SERIE]
           </span>
         </div>
@@ -278,11 +281,11 @@ export function RecentPhotosViewer({
             {/* Nav Arrow Left */}
             <button
               onClick={handlePrev}
-              className="absolute left-2 sm:left-4 z-20 p-2 text-zinc-500 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none bg-transparent border-0 drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
+              className="absolute left-1.5 sm:left-4 z-20 p-1.5 sm:p-2 rounded-full bg-black/60 sm:bg-transparent border border-white/10 sm:border-0 backdrop-blur-sm sm:backdrop-blur-none text-zinc-300 sm:text-zinc-500 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
               aria-label="Foto Precedente"
               title="Foto Precedente (Freccia Sinistra)"
             >
-              <ChevronLeft className="w-7 h-7 sm:w-9 sm:h-9 stroke-[1.5]" />
+              <ChevronLeft className="w-6 h-6 sm:w-9 sm:h-9 stroke-[1.5]" />
             </button>
 
             {/* Photo Container */}
@@ -292,7 +295,7 @@ export function RecentPhotosViewer({
                 src={getOptimizedImageUrl(currentPhoto?.url, 1920, 75)}
                 alt={project.title}
                 onLoad={() => setLoadedCarouselUrl(currentPhoto?.url)}
-                className={`max-h-[58vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-300 ease-out ${
+                className={`max-h-[54vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-300 ease-out ${
                   loadedCarouselUrl === currentPhoto?.url ? "opacity-100" : "opacity-0"
                 }`}
                 decoding="async"
@@ -313,16 +316,16 @@ export function RecentPhotosViewer({
             {/* Nav Arrow Right */}
             <button
               onClick={handleNext}
-              className="absolute right-2 sm:right-4 z-20 p-2 text-zinc-500 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none bg-transparent border-0 drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
+              className="absolute right-1.5 sm:right-4 z-20 p-1.5 sm:p-2 rounded-full bg-black/60 sm:bg-transparent border border-white/10 sm:border-0 backdrop-blur-sm sm:backdrop-blur-none text-zinc-300 sm:text-zinc-500 hover:text-white transition-colors duration-150 cursor-pointer focus-visible:outline-none drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
               aria-label="Foto Successiva"
               title="Foto Successiva (Freccia Destra)"
             >
-              <ChevronRight className="w-7 h-7 sm:w-9 sm:h-9 stroke-[1.5]" />
+              <ChevronRight className="w-6 h-6 sm:w-9 sm:h-9 stroke-[1.5]" />
             </button>
           </div>
 
           {/* Carousel Telemetry & Playback Controls Bar */}
-          <div className="w-full max-w-xl mx-auto pt-3 sm:pt-4 flex items-center justify-between gap-3 text-xs font-mono text-zinc-400">
+          <div className="w-full max-w-xl mx-auto pt-2.5 sm:pt-4 flex items-center justify-between gap-3 text-xs font-mono text-zinc-400">
             {/* Section Tag */}
             <div className="min-w-0 flex items-center gap-2 truncate">
               <span className="text-white font-bold tracking-wider uppercase truncate">
@@ -330,22 +333,23 @@ export function RecentPhotosViewer({
               </span>
             </div>
 
-            {/* Center Controls: Play/Pause */}
-            <div className="flex items-center gap-3">
+            {/* Center Controls: Play/Pause (Icon-only on mobile) */}
+            <div className="flex items-center gap-3 flex-shrink-0">
               <button
                 onClick={() => setIsPlaying((p) => !p)}
-                className="inline-flex items-center gap-1.5 py-1 px-1.5 text-zinc-400 hover:text-white bg-transparent border-0 cursor-pointer transition-colors duration-150 focus-visible:outline-none"
+                aria-label={isPlaying ? "Metti in Pausa" : "Avvia Autoplay"}
+                className="inline-flex items-center gap-1.5 py-1 px-2 text-zinc-400 hover:text-white bg-transparent border-0 cursor-pointer transition-colors duration-150 focus-visible:outline-none"
                 title={isPlaying ? "Metti in Pausa (Spazio)" : "Avvia Autoplay (Spazio)"}
               >
                 {isPlaying ? (
                   <>
-                    <Pause className="w-3.5 h-3.5" />
-                    <span className="text-[10px] tracking-widest uppercase">PAUSA</span>
+                    <Pause className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                    <span className="hidden sm:inline text-[10px] tracking-widest uppercase">PAUSA</span>
                   </>
                 ) : (
                   <>
-                    <Play className="w-3.5 h-3.5" />
-                    <span className="text-[10px] tracking-widest uppercase">PLAY</span>
+                    <Play className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                    <span className="hidden sm:inline text-[10px] tracking-widest uppercase">PLAY</span>
                   </>
                 )}
               </button>

@@ -228,11 +228,11 @@ export function MainProjectViewer({
       if (!clientWidth || !clientHeight) return;
 
       // Reserve space horizontally and vertically for breathing room and side feed column
-      const reservedX = clientWidth < 640 ? 16 : 64;
-      const reservedY = clientWidth < 640 ? 44 : 16;
+      const reservedX = clientWidth < 640 ? 8 : 64;
+      const reservedY = clientWidth < 640 ? 8 : 16;
 
-      const availW = Math.max(280, clientWidth - reservedX);
-      const availH = Math.max(160, clientHeight - reservedY);
+      const availW = Math.max(260, clientWidth - reservedX);
+      const availH = Math.max(150, clientHeight - reservedY);
 
       // Fit strictly within 16:9
       let w = availW;
@@ -449,88 +449,93 @@ export function MainProjectViewer({
               })}
             </div>
           )}
+        </div>
+      </div>
 
-          {/* Mobile Media Selector Bar: Accessible & Horizontally Scrollable (Hidden on Desktop) */}
-          {hasMultipleAssets && (
-            <div
-              className="sm:hidden absolute -bottom-8 left-0 right-0 w-full overflow-x-auto no-scrollbar py-1 z-20 pointer-events-auto"
-              role="tablist"
-              aria-label="Selezione Feed Progetto Mobile"
+      {/* Mobile Media Selector Bar: Dedicated non-clipped flow row (Hidden on Desktop) */}
+      {hasMultipleAssets && (
+        <div
+          className="sm:hidden w-full overflow-x-auto no-scrollbar py-1 flex-shrink-0 z-20 pointer-events-auto"
+          role="tablist"
+          aria-label="Selezione Feed Progetto Mobile"
+        >
+          <div className="flex items-center gap-3 min-w-full w-max justify-center px-3">
+            <button
+              ref={activeMediaIndex === 0 ? activeMobileBtnRef : null}
+              onClick={() => onSelectMedia?.(0)}
+              aria-label={isVideoProject ? "Master Video Feed" : "Still 01"}
+              className={`py-1 px-1.5 text-xs font-mono flex items-center justify-center flex-shrink-0 transition-colors duration-150 cursor-pointer text-center bg-transparent border-0 focus-visible:outline-none ${
+                activeMediaIndex === 0
+                  ? "text-white font-bold"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+              title={isVideoProject ? "Master Video Feed" : "01"}
             >
-              <div className="flex items-center gap-3 min-w-full w-max justify-center px-4">
+              {isVideoProject ? <Film className="w-3.5 h-3.5" aria-hidden="true" /> : "01"}
+            </button>
+            {project.stills.map((_, idx) => {
+              const mediaIndex = idx + 1;
+              const isActive = activeMediaIndex === mediaIndex;
+              const label = isVideoProject
+                ? String(mediaIndex).padStart(2, "0")
+                : String(mediaIndex + 1).padStart(2, "0");
+              return (
                 <button
-                  ref={activeMediaIndex === 0 ? activeMobileBtnRef : null}
-                  onClick={() => onSelectMedia?.(0)}
-                  className={`py-1 px-1.5 text-xs font-mono ${
-                    isVideoProject ? "tracking-wider" : "tabular-nums"
-                  } flex-shrink-0 transition-colors duration-150 cursor-pointer text-center bg-transparent border-0 focus-visible:outline-none ${
-                    activeMediaIndex === 0
+                  key={idx}
+                  ref={isActive ? activeMobileBtnRef : null}
+                  onClick={() => onSelectMedia?.(mediaIndex)}
+                  className={`py-1 px-1.5 text-xs font-mono tabular-nums flex-shrink-0 transition-colors duration-150 cursor-pointer text-center bg-transparent border-0 focus-visible:outline-none ${
+                    isActive
                       ? "text-white font-bold"
                       : "text-zinc-500 hover:text-zinc-300"
                   }`}
-                  title={isVideoProject ? "Master Video Feed" : "01"}
+                  title={`Still ${label}`}
                 >
-                  {isVideoProject ? "VIDEO" : "01"}
+                  {label}
                 </button>
-                {project.stills.map((_, idx) => {
-                  const mediaIndex = idx + 1;
-                  const isActive = activeMediaIndex === mediaIndex;
-                  const label = isVideoProject
-                    ? String(mediaIndex).padStart(2, "0")
-                    : String(mediaIndex + 1).padStart(2, "0");
-                  return (
-                    <button
-                      key={idx}
-                      ref={isActive ? activeMobileBtnRef : null}
-                      onClick={() => onSelectMedia?.(mediaIndex)}
-                      className={`py-1 px-1.5 text-xs font-mono tabular-nums flex-shrink-0 transition-colors duration-150 cursor-pointer text-center bg-transparent border-0 focus-visible:outline-none ${
-                        isActive
-                          ? "text-white font-bold"
-                          : "text-zinc-500 hover:text-zinc-300"
-                      }`}
-                      title={`Still ${label}`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 2. CINEMATIC EDITORIAL CAPTION BLOCK */}
       <div
         style={{ maxWidth: boxDimensions ? `${boxDimensions.width}px` : "72rem" }}
-        className="w-full mx-auto px-1 sm:px-2 pt-3 sm:pt-4 pb-1 sm:pb-2 flex flex-col justify-between gap-2.5 sm:gap-3 min-h-[96px] sm:min-h-[110px] flex-shrink-0"
+        className="w-full mx-auto px-1 sm:px-2 pt-2 sm:pt-4 pb-1 sm:pb-2 flex flex-col justify-between gap-1.5 sm:gap-3 min-h-0 sm:min-h-[110px] flex-shrink-0"
       >
         {/* Row 1: Huge Editorial Title (Left) + Distinct Category (Right) */}
-        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-none">
+        <div className="flex items-baseline justify-between gap-2 sm:gap-4 min-w-0">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-none truncate">
             {editorial.title}
           </h1>
           <span
-            className={`font-mono text-xs sm:text-sm md:text-base ${theme.textAccent} font-bold tracking-widest uppercase flex-shrink-0 sm:text-right`}
+            className={`font-mono text-[11px] sm:text-sm md:text-base ${theme.textAccent} font-bold tracking-widest uppercase flex-shrink-0 text-right`}
             style={{ color: theme.colorHex }}
           >
             {editorial.category}
           </span>
         </div>
 
-        {/* Row 2: Minimal Year & Nature Meta (Left) + Technical INFO ⓘ Exit Link (Right) */}
+        {/* Row 2: Minimal Year & Nature Meta (Left) + Technical INFO ⓘ Exit Link (Right - Icon only on mobile) */}
         <div className="flex items-center justify-between gap-4 pt-1 sm:pt-1.5 border-t border-white/[0.06]">
-          <div className="font-mono text-[11px] sm:text-xs text-zinc-500 tracking-wider uppercase">
+          <div className="font-mono text-[10px] sm:text-xs text-zinc-500 tracking-wider uppercase truncate">
             {editorial.meta}
           </div>
 
           <button
             onClick={onOpenDetails}
-            className="inline-flex items-center gap-1.5 font-mono text-[11px] sm:text-xs text-zinc-400 hover:text-white tracking-widest uppercase transition-colors duration-150 cursor-pointer focus-visible:outline-none group"
+            className="inline-flex items-center gap-1.5 p-1 -mr-1 sm:p-0 sm:mr-0 font-mono text-[11px] sm:text-xs text-zinc-400 hover:text-white tracking-widest uppercase transition-colors duration-150 cursor-pointer focus-visible:outline-none group flex-shrink-0"
             aria-label={`Apri scheda e crediti di ${editorial.title}`}
+            title="Dettagli e Crediti"
           >
-            <span className="group-hover:underline underline-offset-4 decoration-white/40">INFO</span>
-            <Info className="w-3.5 h-3.5 text-zinc-400 group-hover:text-white transition-colors stroke-[1.75]" aria-hidden="true" />
+            <span className="hidden sm:inline group-hover:underline underline-offset-4 decoration-white/40">
+              INFO
+            </span>
+            <Info
+              className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-zinc-400 group-hover:text-white transition-colors stroke-[1.75]"
+              aria-hidden="true"
+            />
           </button>
         </div>
       </div>

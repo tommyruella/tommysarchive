@@ -5,10 +5,8 @@ import Link from "next/link";
 import { WORKSTATION_PROJECTS } from "@/data/projects";
 import { MainProjectViewer } from "./MainProjectViewer";
 import { ProjectTimelineBar } from "./ProjectTimelineBar";
-import { AboutWorkstationDrawer } from "./AboutWorkstationDrawer";
 import { ProjectDetailsModal } from "./ProjectDetailsModal";
 import { CinemaLoader, hasSessionCalibrated } from "@/components/CinemaLoader";
-import { ArrowUpRight } from "lucide-react";
 
 export function WorkstationShell() {
   const [activeProjectId, setActiveProjectId] = useState<string>(() => {
@@ -27,7 +25,6 @@ export function WorkstationShell() {
   const [activeMediaIndex, setActiveMediaIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTimecode, setCurrentTimecode] = useState<string>("00:00:00:00");
-  const [isAboutOpen, setIsAboutOpen] = useState<boolean>(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(() => hasSessionCalibrated());
 
@@ -42,6 +39,7 @@ export function WorkstationShell() {
   // Sync with URL query parameter ?project=slug and ?details=true
   useEffect(() => {
     if (typeof window !== "undefined") {
+      document.title = "Tommaso Ruella";
       const params = new URLSearchParams(window.location.search);
       const projectParam = params.get("project");
       const detailsParam = params.get("details");
@@ -105,7 +103,8 @@ export function WorkstationShell() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
         e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
+        e.target instanceof HTMLTextAreaElement ||
+        isDetailsOpen
       ) {
         return;
       }
@@ -128,7 +127,7 @@ export function WorkstationShell() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIndex, handleSelectProject]);
+  }, [activeIndex, handleSelectProject, isDetailsOpen]);
 
   return (
     <div className="w-full h-[100dvh] bg-[#000000] text-zinc-100 flex flex-col overflow-hidden select-none relative">
@@ -142,7 +141,7 @@ export function WorkstationShell() {
 
       {/* 1. WORKSTATION STAGE: Gated and revealed seamlessly when calibration completes */}
       <div
-        className={`w-full h-full flex flex-col transition-opacity duration-700 ease-out ${
+        className={`w-full h-full flex flex-col pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-0 transition-opacity duration-700 ease-out ${
           isReady ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       >
@@ -150,23 +149,34 @@ export function WorkstationShell() {
         <header className="h-14 sm:h-16 px-4 sm:px-8 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#000000] z-20">
           <Link
             href="/"
-            className="focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+            aria-label="Torna alla Home"
+            className="text-sm sm:text-base font-black tracking-tight uppercase text-white hover:text-zinc-300 transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
           >
-            <span className="text-sm sm:text-base font-black tracking-tight uppercase text-white hover:text-zinc-300 transition-colors">
-              Tommaso Ruella
-            </span>
+            <span className="sm:hidden">TR</span>
+            <span className="hidden sm:inline">Tommaso Ruella</span>
           </Link>
 
-          <Link
-            href="/archive"
-            className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+          <nav
+            aria-label="Navigazione principale"
+            className="flex items-center gap-5 sm:gap-7"
           >
-            Archive
-          </Link>
+            <Link
+              href="/about"
+              className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+            >
+              About
+            </Link>
+            <Link
+              href="/archive"
+              className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400 hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+            >
+              Archive
+            </Link>
+          </nav>
         </header>
 
         {/* Main Cinema Stage */}
-        <main className="flex-1 w-full min-h-0 flex flex-col overflow-hidden relative p-2 sm:p-4 md:p-6">
+        <main className="flex-1 w-full min-h-0 flex flex-col overflow-hidden relative px-2 pt-1 pb-3 sm:p-4 md:p-6">
           <MainProjectViewer
             project={activeProject}
             activeMediaIndex={activeMediaIndex}
@@ -181,7 +191,7 @@ export function WorkstationShell() {
         </main>
 
         {/* Signature SMPTE Playhead & Filmstrip Rail */}
-        <footer className="w-full flex-shrink-0 h-28 sm:h-32">
+        <footer className="w-full flex-shrink-0 h-24 sm:h-32">
           <ProjectTimelineBar
             projects={WORKSTATION_PROJECTS}
             activeProjectId={activeProjectId}
@@ -206,12 +216,7 @@ export function WorkstationShell() {
         }}
         onSelectStill={(index) => setActiveMediaIndex(index)}
       />
-
-      {/* Slide-Over Drawer for Profile / About */}
-      <AboutWorkstationDrawer
-        isOpen={isAboutOpen}
-        onClose={() => setIsAboutOpen(false)}
-      />
     </div>
   );
 }
+

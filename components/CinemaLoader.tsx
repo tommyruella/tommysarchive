@@ -305,12 +305,18 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
       {/* Top authorial header - Matched 1:1 with site topbar */}
       <header className="h-14 sm:h-16 px-4 sm:px-8 border-b border-white/[0.08] flex items-center justify-between flex-shrink-0 bg-[#000000] z-20">
         <span className="text-sm sm:text-base font-black tracking-tight uppercase text-white">
-          Tommaso Ruella
+          <span className="sm:hidden">TR</span>
+          <span className="hidden sm:inline">Tommaso Ruella</span>
         </span>
 
-        <span className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400">
-          Archive
-        </span>
+        <div className="flex items-center gap-5 sm:gap-7">
+          <span className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400">
+            About
+          </span>
+          <span className="text-xs sm:text-sm font-mono uppercase tracking-widest text-zinc-400">
+            Archive
+          </span>
+        </div>
       </header>
 
       {/* Center percentage counter & calibrated progress bar */}
@@ -333,7 +339,7 @@ export function CinemaLoader({ activeProjectId, onComplete }: CinemaLoaderProps)
       </div>
 
       {/* Bottom technical metadata */}
-      <footer className="h-12 sm:h-14 px-4 sm:px-8 flex items-center justify-between text-xs text-zinc-500 font-mono tabular-nums flex-shrink-0">
+      <footer className="h-12 sm:h-14 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-0 px-4 sm:px-8 flex items-center justify-between text-xs text-zinc-500 font-mono tabular-nums flex-shrink-0">
         <span>Turin, Italy</span>
         <span>2022 — {new Date().getFullYear()}</span>
       </footer>

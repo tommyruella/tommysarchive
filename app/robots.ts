@@ -5,7 +5,15 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: [
+        '/api/',
+        '/statement',
+        '/reel',
+        '/shootings',
+        '/cv',
+      ],
     },
     sitemap: 'https://tommasoruella.com/sitemap.xml',
   };
 }
+

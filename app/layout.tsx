@@ -27,12 +27,9 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tommasoruella.com"),
-  title: {
-    default: "Tommaso Ruella — Cinema & Visual Direction",
-    template: "%s | Tommaso Ruella",
-  },
+  title: "Tommaso Ruella",
   description:
-    "Cinema student portfolio at Politecnico di Torino. Films, 35mm photography, DaVinci Resolve color grading, 3D modeling and visual direction.",
+    "Portfolio di Tommaso Ruella. Cinema, fotografia 35mm, DaVinci Resolve color grading e 3D.",
   keywords: [
     "Tommaso Ruella",
     "Cinema",
@@ -42,25 +39,24 @@ export const metadata: Metadata = {
     "16mm",
     "DaVinci Resolve",
     "Color Grading",
-    "Visual Direction",
     "Portfolio",
   ],
   authors: [{ name: "Tommaso Ruella", url: "https://tommasoruella.com" }],
   creator: "Tommaso Ruella",
   openGraph: {
-    title: "Tommaso Ruella — Cinema & Visual Direction",
+    title: "Tommaso Ruella",
     description:
-      "Cinema student portfolio. Films, 35mm photography, and visual direction.",
+      "Portfolio di Tommaso Ruella.",
     url: "https://tommasoruella.com",
-    siteName: "Tommaso Ruella Portfolio",
+    siteName: "Tommaso Ruella",
     locale: "it_IT",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tommaso Ruella — Cinema & Visual Direction",
+    title: "Tommaso Ruella",
     description:
-      "Cinema student portfolio. Films, 35mm photography, and visual direction.",
+      "Portfolio di Tommaso Ruella.",
   },
   robots: {
     index: true,

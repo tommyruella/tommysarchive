@@ -1,6 +1,6 @@
 # DESIGN.md — Ultra-Minimal Brutalist Cinema Workstation
 
-**Project:** Tommaso Ruella — Cinema Student & Visual Direction Portfolio  
+**Project:** Tommaso Ruella  
 **Reference Standards:** Google Stitch DESIGN.md · Vercel Web Interface Guidelines · Industrial Brutalism UI · Minimalist UI · GEMINI.md  
 
 ---

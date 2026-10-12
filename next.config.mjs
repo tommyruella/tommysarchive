@@ -40,6 +40,35 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/films',
+        destination: '/archive',
+        permanent: false,
+      },
+      {
+        source: '/shootings',
+        destination: '/archive',
+        permanent: false,
+      },
+      {
+        source: '/statement',
+        destination: '/about',
+        permanent: false,
+      },
+      {
+        source: '/reel',
+        destination: '/',
+        permanent: false,
+      },
+      {
+        source: '/cv',
+        destination: '/about',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
