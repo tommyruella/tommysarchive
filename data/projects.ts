@@ -334,23 +334,27 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
   },
 ];
 
-const MEDIA_BASE_URL = (
-  process.env.NEXT_PUBLIC_MEDIA_URL ||
-  "https://myottiivbgnvewtwipmg.supabase.co/storage/v1/object/public/stills"
-).replace(/\/+$/, "");
+const rawMediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
+
+// All assets are served directly from Vercel (public/projects/).
+// If NEXT_PUBLIC_MEDIA_URL is explicitly set in the future (e.g. external CDN), use it.
+const MEDIA_BASE_URL = (rawMediaUrl || "").replace(/\/+$/, "");
 
 /**
  * Resolves a media URL:
  * - If it's an absolute HTTP/HTTPS URL, returns it unchanged.
  * - If NEXT_PUBLIC_MEDIA_URL is set and the url starts with /projects/, redirects to the cloud bucket.
- * - Otherwise returns the relative path (local dev fallback).
+ * - Otherwise returns the relative path (Vercel / Next.js static asset).
  */
 export function resolveMediaUrl(url: string): string {
   if (!url) return url;
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
+
   if (MEDIA_BASE_URL && url.startsWith("/projects/")) {
-    return `${MEDIA_BASE_URL}${url.slice("/projects".length)}`;
+    const cloudPath = url.slice("/projects/".length);
+    return `${MEDIA_BASE_URL}/${cloudPath}`;
   }
+
   return url;
 }
 

@@ -59,13 +59,14 @@ export default function ArchivePage() {
           seenMedia.add(still.url);
           items.push({
             id: `still-${proj.id}-${sIdx}`,
-            title: `${proj.title} Frame ${sIdx + 1}`,
+            title: `${proj.title} · Frame ${sIdx + 1}`,
             category: cat,
             type: "image",
             mediaUrl: still.url,
             aspectRatio: still.aspectRatio,
             projectSlug: proj.slug,
             projectTitle: proj.title,
+            frameIndex: sIdx + 1,
             year: proj.year,
           });
         }

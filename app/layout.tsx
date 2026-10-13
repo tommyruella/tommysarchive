@@ -83,8 +83,6 @@ export default function RootLayout({
       style={{ colorScheme: "dark" }}
     >
       <head>
-        <link rel="preconnect" href="https://myottiivbgnvewtwipmg.supabase.co" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://myottiivbgnvewtwipmg.supabase.co" />
         <link rel="preconnect" href="https://img.youtube.com" crossOrigin="" />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
       </head>

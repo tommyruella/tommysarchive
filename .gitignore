@@ -37,9 +37,6 @@ next-env.d.ts.bak
 # Large raw screenshots/temporary screen captures
 /Screenshot*.png
 
-# High-resolution media assets (hosted externally on Supabase Storage)
-/public/projects/*
-!/public/projects/.gitkeep
 
 # Local agent/IDE caches
 .antigravity/

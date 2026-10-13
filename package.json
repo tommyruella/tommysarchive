@@ -9,6 +9,7 @@
     "start": "next start",
     "sync-stills": "node scripts/sync-stills.mjs",
     "sync:supabase": "node scripts/sync-supabase.mjs",
+    "convert:webp": "node scripts/convert-to-webp.mjs",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],

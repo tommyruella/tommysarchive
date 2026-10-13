@@ -246,6 +246,32 @@ export function RecentPhotosViewer({
                           e.currentTarget.classList.remove("opacity-0");
                           e.currentTarget.classList.add("opacity-100");
                         }}
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.fallback) {
+                            target.dataset.fallback = "1";
+                            // If remote URL failed, fallback to direct local path
+                            if (still.url.startsWith("http")) {
+                              const localPath = still.url.replace(
+                                /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/,
+                                "/projects"
+                              );
+                              target.src = getOptimizedImageUrl(localPath, 640, 75);
+                              return;
+                            }
+                            // If webp failed, fallback to png
+                            if (still.url.endsWith(".webp")) {
+                              target.src = getOptimizedImageUrl(
+                                still.url.replace(/\.webp$/, ".png"),
+                                640,
+                                75
+                              );
+                              return;
+                            }
+                          }
+                          target.classList.remove("opacity-0");
+                          target.classList.add("opacity-100");
+                        }}
                         className="w-full h-auto block filter contrast-105 group-hover:scale-[1.02] transition-all duration-300 ease-out opacity-0"
                         decoding={isPriorityPhoto ? "sync" : "async"}
                       />
@@ -294,7 +320,37 @@ export function RecentPhotosViewer({
                 key={currentPhoto?.url}
                 src={getOptimizedImageUrl(currentPhoto?.url, 1920, 75)}
                 alt={project.title}
+                ref={(el) => {
+                  if (el && el.complete && currentPhoto?.url) {
+                    setLoadedCarouselUrl(currentPhoto.url);
+                  }
+                }}
                 onLoad={() => setLoadedCarouselUrl(currentPhoto?.url)}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.dataset.fallback && currentPhoto?.url) {
+                    target.dataset.fallback = "1";
+                    if (currentPhoto.url.startsWith("http")) {
+                      const localPath = currentPhoto.url.replace(
+                        /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/,
+                        "/projects"
+                      );
+                      target.src = getOptimizedImageUrl(localPath, 1920, 75);
+                      return;
+                    }
+                    if (currentPhoto.url.endsWith(".webp")) {
+                      target.src = getOptimizedImageUrl(
+                        currentPhoto.url.replace(/\.webp$/, ".png"),
+                        1920,
+                        75
+                      );
+                      return;
+                    }
+                  }
+                  if (currentPhoto?.url) {
+                    setLoadedCarouselUrl(currentPhoto.url);
+                  }
+                }}
                 className={`max-h-[54vh] sm:max-h-[64vh] max-w-full w-auto h-auto object-contain select-none transition-opacity duration-300 ease-out ${
                   loadedCarouselUrl === currentPhoto?.url ? "opacity-100" : "opacity-0"
                 }`}
