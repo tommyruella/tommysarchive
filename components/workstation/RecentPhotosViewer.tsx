@@ -250,24 +250,12 @@ export function RecentPhotosViewer({
                           const target = e.currentTarget;
                           if (!target.dataset.fallback) {
                             target.dataset.fallback = "1";
-                            // If remote URL failed, fallback to direct local path
-                            if (still.url.startsWith("http")) {
-                              const localPath = still.url.replace(
-                                /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/,
-                                "/projects"
-                              );
-                              target.src = getOptimizedImageUrl(localPath, 640, 75);
-                              return;
-                            }
-                            // If webp failed, fallback to png
-                            if (still.url.endsWith(".webp")) {
-                              target.src = getOptimizedImageUrl(
-                                still.url.replace(/\.webp$/, ".png"),
-                                640,
-                                75
-                              );
-                              return;
-                            }
+                            // Fallback to direct raw static path without optimization pipeline
+                            const localPath = still.url.startsWith("http")
+                              ? still.url.replace(/^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/, "/projects")
+                              : still.url;
+                            target.src = localPath;
+                            return;
                           }
                           target.classList.remove("opacity-0");
                           target.classList.add("opacity-100");
@@ -330,22 +318,11 @@ export function RecentPhotosViewer({
                   const target = e.currentTarget;
                   if (!target.dataset.fallback && currentPhoto?.url) {
                     target.dataset.fallback = "1";
-                    if (currentPhoto.url.startsWith("http")) {
-                      const localPath = currentPhoto.url.replace(
-                        /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/,
-                        "/projects"
-                      );
-                      target.src = getOptimizedImageUrl(localPath, 1920, 75);
-                      return;
-                    }
-                    if (currentPhoto.url.endsWith(".webp")) {
-                      target.src = getOptimizedImageUrl(
-                        currentPhoto.url.replace(/\.webp$/, ".png"),
-                        1920,
-                        75
-                      );
-                      return;
-                    }
+                    const localPath = currentPhoto.url.startsWith("http")
+                      ? currentPhoto.url.replace(/^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/, "/projects")
+                      : currentPhoto.url;
+                    target.src = localPath;
+                    return;
                   }
                   if (currentPhoto?.url) {
                     setLoadedCarouselUrl(currentPhoto.url);

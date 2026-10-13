@@ -337,17 +337,27 @@ export const PROJECTS_METADATA: ProjectMetadata[] = [
 const rawMediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 // All assets are served directly from Vercel (public/projects/).
-// If NEXT_PUBLIC_MEDIA_URL is explicitly set in the future (e.g. external CDN), use it.
-const MEDIA_BASE_URL = (rawMediaUrl || "").replace(/\/+$/, "");
+// Ignore any legacy Supabase URL that may still be configured in Vercel project environment variables.
+const isSupabase = typeof rawMediaUrl === "string" && rawMediaUrl.includes("supabase.co");
+const MEDIA_BASE_URL = (!isSupabase && rawMediaUrl ? rawMediaUrl : "").trim().replace(/\/+$/, "");
 
 /**
  * Resolves a media URL:
- * - If it's an absolute HTTP/HTTPS URL, returns it unchanged.
- * - If NEXT_PUBLIC_MEDIA_URL is set and the url starts with /projects/, redirects to the cloud bucket.
+ * - If it's an absolute HTTP/HTTPS URL, returns it unchanged (or strips legacy Supabase URL).
+ * - If a custom external CDN is set in NEXT_PUBLIC_MEDIA_URL, redirects to it.
  * - Otherwise returns the relative path (Vercel / Next.js static asset).
  */
 export function resolveMediaUrl(url: string): string {
   if (!url) return url;
+
+  // Strip any legacy Supabase storage prefixes and normalize to local /projects path
+  if (url.includes("supabase.co/storage/v1/object/public/stills")) {
+    url = url.replace(
+      /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/,
+      "/projects"
+    );
+  }
+
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
 
   if (MEDIA_BASE_URL && url.startsWith("/projects/")) {

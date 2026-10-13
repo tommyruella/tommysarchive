@@ -13,14 +13,23 @@ export function getOptimizedImageUrl(
 ): string {
   if (!url) return "";
 
+  // Strip any legacy Supabase storage prefixes and normalize to local /projects path
+  let targetUrl = url;
+  if (targetUrl.includes("supabase.co/storage/v1/object/public/stills")) {
+    targetUrl = targetUrl.replace(
+      /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/stills/,
+      "/projects"
+    );
+  }
+
   // If already an SVG or data URL, don't pass through image optimizer
-  if (url.startsWith("data:") || url.endsWith(".svg") || url.endsWith(".gif")) {
-    return url;
+  if (targetUrl.startsWith("data:") || targetUrl.endsWith(".svg") || targetUrl.endsWith(".gif")) {
+    return targetUrl;
   }
 
   // If already passing through Next image optimizer, return as is
-  if (url.startsWith("/_next/image")) {
-    return url;
+  if (targetUrl.startsWith("/_next/image")) {
+    return targetUrl;
   }
 
   // Find the smallest standard width that is >= targetWidth
@@ -29,9 +38,9 @@ export function getOptimizedImageUrl(
     VALID_NEXT_WIDTHS[VALID_NEXT_WIDTHS.length - 1];
 
   // Decode first to prevent double-encoding (e.g. %20 -> %2520), then cleanly encode
-  let sanitizedUrl = url;
+  let sanitizedUrl = targetUrl;
   try {
-    sanitizedUrl = decodeURI(url);
+    sanitizedUrl = decodeURI(targetUrl);
   } catch {
     // If malformed or already clean, fallback to original
   }
