@@ -267,6 +267,29 @@ export default function AboutPage() {
                     <circle cx="4" cy="4" r="2" />
                   </svg>
                 </a>
+
+                <a
+                  href="https://it.pinterest.com/tommytegamino/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Pinterest @tommytegamino"
+                  className="text-zinc-400 hover:text-white transition-colors focus-visible:ring-1 focus-visible:ring-white/80 focus-visible:outline-none"
+                >
+                  <svg
+                    className="w-[18px] h-[18px]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="8" y1="20" x2="12" y2="11" />
+                    <path d="M10.7 14c.437 1.263 1.43 2 2.55 2c2.071 0 3.75 -1.554 3.75 -4a5 5 0 1 0 -9.7 1.7" />
+                    <circle cx="12" cy="12" r="9" />
+                  </svg>
+                </a>
               </div>
             </div>
           </motion.section>
