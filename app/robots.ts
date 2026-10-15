@@ -13,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         '/cv',
       ],
     },
-    sitemap: 'https://tommasoruella.com/sitemap.xml',
+    sitemap: 'https://tommysarchive.vercel.app/sitemap.xml',
   };
 }
 

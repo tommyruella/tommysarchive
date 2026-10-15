@@ -79,7 +79,7 @@ export default function AboutPage() {
                 Ciao, sono Tommaso Ruella.
               </h1>
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-zinc-400">
-                Filmaker / Editor
+                Filmmaker / Editor
               </p>
             </div>
 
@@ -90,25 +90,25 @@ export default function AboutPage() {
             </p>
           </motion.section>
 
-          {/* 2. Education & Focus */}
+          {/* 2. Formazione e Ambiti */}
           <motion.section
             initial="hidden"
             animate="visible"
             custom={0.06}
             variants={fadeUp}
-            aria-label="Education e Focus"
+            aria-label="Formazione e Ambiti"
             className="pt-5 sm:pt-6 border-t border-white/[0.07] grid grid-cols-1 sm:grid-cols-[1fr_180px] gap-6 sm:gap-10 items-start"
           >
-            {/* Education */}
+            {/* Formazione */}
             <div className="space-y-2.5">
               <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                Education
+                Formazione
               </h2>
 
               <div className="space-y-3">
                 <div className="space-y-0.5">
                   <div className="font-mono text-[11px] text-zinc-400 tracking-wider uppercase">
-                    2022 - Present
+                    2022 - Presente
                   </div>
                   <div className="font-sans text-sm sm:text-[15px] font-semibold text-zinc-100 uppercase">
                     Politecnico di Torino
@@ -120,7 +120,7 @@ export default function AboutPage() {
 
                 <div className="space-y-0.5">
                   <div className="font-mono text-[11px] text-zinc-400 tracking-wider uppercase">
-                    2016 - 2024
+                    2017 - 2024
                   </div>
                   <div className="font-sans text-sm sm:text-[15px] font-semibold text-zinc-100 uppercase">
                     I.I.S. Bernardo Vittone
@@ -132,10 +132,10 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Focus */}
+            {/* Ambiti */}
             <div className="space-y-2">
               <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                Focus
+                Ambiti
               </h2>
               <ul className="space-y-0.5 font-sans text-xs sm:text-sm font-medium uppercase tracking-wide text-zinc-200">
                 <li>Film</li>
@@ -143,44 +143,43 @@ export default function AboutPage() {
                 <li>Color</li>
                 <li>3D</li>
                 <li>VFX</li>
-                <li>Photography</li>
+                <li>Fotografia</li>
               </ul>
             </div>
           </motion.section>
 
-          {/* 3. Software & Languages */}
+          {/* 3. Strumenti e Lingue */}
           <motion.section
             initial="hidden"
             animate="visible"
             custom={0.12}
             variants={fadeUp}
-            aria-label="Software e Languages"
+            aria-label="Strumenti e Lingue"
             className="pt-5 sm:pt-6 border-t border-white/[0.07] grid grid-cols-1 sm:grid-cols-[1fr_180px] gap-6 sm:gap-10 items-start"
           >
-            {/* Software */}
+            {/* Strumenti */}
             <div className="space-y-2">
               <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                Software
+                Strumenti
               </h2>
               <ul className="space-y-0.5 font-sans text-xs sm:text-sm font-medium uppercase tracking-wide text-zinc-200">
                 <li>DaVinci Resolve</li>
-                <li className="text-zinc-300">Lightroom – Photoshop</li>
+                <li className="text-zinc-300">Lightroom</li>
                 <li className="text-zinc-400">Blender</li>
-                <li className="text-zinc-400">Web Design</li>
               </ul>
             </div>
 
-            {/* Languages */}
+            {/* Lingue */}
             <div className="space-y-2">
               <h2 className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                Languages
+                Lingue
               </h2>
               <div className="space-y-1 font-mono text-xs uppercase tracking-wider">
                 <div className="flex items-baseline gap-3">
                   <span className="font-sans font-bold text-zinc-100 text-xs sm:text-sm">
                     IT
                   </span>
-                  <span className="text-zinc-400 text-[11px]">Native</span>
+                  <span className="text-zinc-400 text-[11px]">Madrelingua</span>
                 </div>
                 <div className="flex items-baseline gap-3">
                   <span className="font-sans font-bold text-zinc-100 text-xs sm:text-sm">
@@ -192,7 +191,7 @@ export default function AboutPage() {
             </div>
           </motion.section>
 
-          {/* 4. Contacts */}
+          {/* 4. Contatti */}
           <motion.section
             initial="hidden"
             animate="visible"
@@ -205,7 +204,7 @@ export default function AboutPage() {
               id="about-contact-heading"
               className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500"
             >
-              Contacts
+              Contatti
             </h2>
 
             <div className="flex items-center justify-between gap-6">

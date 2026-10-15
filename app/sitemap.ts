@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { WORKSTATION_PROJECTS } from '@/data/projects';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://tommasoruella.com';
+  const baseUrl = 'https://tommysarchive.vercel.app';
 
   const staticRoutes: MetadataRoute.Sitemap = [
     '',

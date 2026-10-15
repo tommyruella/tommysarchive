@@ -19,27 +19,27 @@ export function getProjectEditorial(project: {
 }): ProjectEditorialInfo {
   const editorialMap: Record<string, ProjectEditorialInfo> = {
     // Slugs
+    "timeless": { title: "TIMELESS", category: "SHORT FILM", meta: "2024 / PERSONAL" },
     "london": { title: "LONDON MARCH '26", category: "TRAVEL VLOG", meta: "2026 / PERSONAL" },
     "barca-2": { title: "BARÇA JULY '25", category: "TRAVEL VLOG", meta: "2025 / PERSONAL" },
     "ctrl-z": { title: "CTRL+Z", category: "EXPERIMENTAL", meta: "2025 / ARG & WEB" },
     "hobbiton": { title: "HOBBITON", category: "3D ENVIRONMENT", meta: "2025 / 3D SCENE" },
-    "timeless": { title: "TIMELESS", category: "SHORT FILM", meta: "2024 / PERSONAL" },
     "donut-in-turin": { title: "DONUT IN TURIN", category: "3D ANIMATION", meta: "2024 / 3D RENDER" },
     "esothia": { title: "ESOTHIA", category: "SOUND & VFX", meta: "2024 / INSTALLATION" },
     "logo-animation": { title: "LOGO ANIMATION", category: "MOTION GRAPHICS", meta: "2024 / 3D MOTION" },
-    "set-23-barca": { title: "BARÇA SET '23", category: "TRAVEL VLOG", meta: "2023 / PERSONAL" },
+    "set-23-barca": { title: "BARÇA SEPT '23", category: "TRAVEL VLOG", meta: "2023 / PERSONAL" },
     "valencia": { title: "VALENCIA APRIL '23", category: "TRAVEL VLOG", meta: "2023 / PERSONAL" },
     "recent-works-foto": { title: "RECENT PHOTOS", category: "PHOTOGRAPHY", meta: "2024–2026 / PHOTO" },
-    // Numerical IDs (01: London, ..., 11: Recent Photos)
-    "01": { title: "LONDON MARCH '26", category: "TRAVEL VLOG", meta: "2026 / PERSONAL" },
-    "02": { title: "BARÇA JULY '25", category: "TRAVEL VLOG", meta: "2025 / PERSONAL" },
-    "03": { title: "CTRL+Z", category: "EXPERIMENTAL", meta: "2025 / ARG & WEB" },
-    "04": { title: "HOBBITON", category: "3D ENVIRONMENT", meta: "2025 / 3D SCENE" },
-    "05": { title: "TIMELESS", category: "SHORT FILM", meta: "2024 / PERSONAL" },
+    // Numerical IDs (01: Timeless, 02: London, ..., 11: Recent Photos)
+    "01": { title: "TIMELESS", category: "SHORT FILM", meta: "2024 / PERSONAL" },
+    "02": { title: "LONDON MARCH '26", category: "TRAVEL VLOG", meta: "2026 / PERSONAL" },
+    "03": { title: "BARÇA JULY '25", category: "TRAVEL VLOG", meta: "2025 / PERSONAL" },
+    "04": { title: "CTRL+Z", category: "EXPERIMENTAL", meta: "2025 / ARG & WEB" },
+    "05": { title: "HOBBITON", category: "3D ENVIRONMENT", meta: "2025 / 3D SCENE" },
     "06": { title: "DONUT IN TURIN", category: "3D ANIMATION", meta: "2024 / 3D RENDER" },
     "07": { title: "ESOTHIA", category: "SOUND & VFX", meta: "2024 / INSTALLATION" },
     "08": { title: "LOGO ANIMATION", category: "MOTION GRAPHICS", meta: "2024 / 3D MOTION" },
-    "09": { title: "BARÇA SET '23", category: "TRAVEL VLOG", meta: "2023 / PERSONAL" },
+    "09": { title: "BARÇA SEPT '23", category: "TRAVEL VLOG", meta: "2023 / PERSONAL" },
     "10": { title: "VALENCIA APRIL '23", category: "TRAVEL VLOG", meta: "2023 / PERSONAL" },
     "11": { title: "RECENT PHOTOS", category: "PHOTOGRAPHY", meta: "2024–2026 / PHOTO" },
   };
@@ -70,8 +70,8 @@ export function splitProjectTitle(
     return { primary: "", secondary: "", fullTitle: "" };
   }
 
-  // Handle month/year patterns: "London March '26", "Barça August '25", "Barça Set '23", "Valencia April '23"
-  const datePattern = /^(.*?)\s+((?:January|February|March|April|May|June|July|August|September|October|November|December|Set)\s+'?\d{2,4})$/i;
+  // Handle month/year patterns: "London March '26", "Barça August '25", "Barça Sept '23", "Valencia April '23"
+  const datePattern = /^(.*?)\s+((?:January|February|March|April|May|June|July|August|September|October|November|December|Set|Sept)\s+'?\d{2,4})$/i;
   const match = title.match(datePattern);
   if (match) {
     return {

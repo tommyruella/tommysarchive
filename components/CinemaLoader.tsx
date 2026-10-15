@@ -58,7 +58,7 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
   const prioritySet = new Set<string>();
   const secondarySet = new Set<string>();
 
-  // 1. Active project hero poster + lead scene stills (TOP PRIORITY - defaults to 01 London March '26)
+  // 1. Active project hero poster + lead scene stills (TOP PRIORITY - defaults to 01 Timeless)
   const activeProj =
     WORKSTATION_PROJECTS.find(
       (p) => p.id === activeProjectId || p.slug === activeProjectId
@@ -91,7 +91,7 @@ function getEssentialAssets(activeProjectId?: string): AssetQueue {
         if (heroUrl) prioritySet.add(heroUrl);
       }
     } else {
-      // Standard lead project (01 London): Preload 1920px hero poster + lead 4 stills
+      // Standard lead project (01 Timeless): Preload 1920px hero poster + lead 4 stills
       if (poster) {
         const clean = getCleanPoster(poster, activeProj.primaryMedia.youtubeId);
         const heroUrl = getOptimizedImageUrl(clean, 1920, 75);

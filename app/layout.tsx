@@ -26,28 +26,27 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tommasoruella.com"),
+  metadataBase: new URL("https://tommysarchive.vercel.app"),
   title: "Tommaso Ruella",
   description:
-    "Portfolio di Tommaso Ruella. Cinema, fotografia 35mm, DaVinci Resolve color grading e 3D.",
+    "Portfolio di Tommaso Ruella. Post-produzione, video editing, color grading su DaVinci Resolve e 3D.",
   keywords: [
     "Tommaso Ruella",
-    "Cinema",
-    "Regia",
+    "Post-produzione",
+    "Video Edit",
+    "Montaggio",
     "Politecnico di Torino",
-    "35mm",
-    "16mm",
     "DaVinci Resolve",
     "Color Grading",
     "Portfolio",
   ],
-  authors: [{ name: "Tommaso Ruella", url: "https://tommasoruella.com" }],
+  authors: [{ name: "Tommaso Ruella", url: "https://tommysarchive.vercel.app" }],
   creator: "Tommaso Ruella",
   openGraph: {
     title: "Tommaso Ruella",
     description:
-      "Portfolio di Tommaso Ruella.",
-    url: "https://tommasoruella.com",
+      "Portfolio di Tommaso Ruella. Post-produzione, video editing e color grading.",
+    url: "https://tommysarchive.vercel.app",
     siteName: "Tommaso Ruella",
     locale: "it_IT",
     type: "website",
@@ -56,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Tommaso Ruella",
     description:
-      "Portfolio di Tommaso Ruella.",
+      "Portfolio di Tommaso Ruella. Post-produzione, video editing e color grading.",
   },
   robots: {
     index: true,
