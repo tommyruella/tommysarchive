@@ -120,7 +120,7 @@ export default function AboutPage() {
 
                 <div className="space-y-0.5">
                   <div className="font-mono text-[11px] text-zinc-400 tracking-wider uppercase">
-                    2017 - 2024
+                    2017 - 2022
                   </div>
                   <div className="font-sans text-sm sm:text-[15px] font-semibold text-zinc-100 uppercase">
                     I.I.S. Bernardo Vittone
